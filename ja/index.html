@@ -14,11 +14,11 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yourdomain.com/ja/">
     <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
-    <!-- 言語切り替え関連タグ -->
-    <link rel="alternate" hreflang="zh" href="/zh/">
-    <link rel="alternate" hreflang="ja" href="/ja/">
-    <link rel="alternate" hreflang="en" href="/">
-    <link rel="alternate" hreflang="x-default" href="/">
+    <!-- 言語切り替え用メタタグ -->
+    <link rel="alternate" hreflang="zh" href="../zh/index.html">
+    <link rel="alternate" hreflang="ja" href="index.html">
+    <link rel="alternate" hreflang="en" href="../index.html">
+    <link rel="alternate" hreflang="x-default" href="../index.html">
 </head>
 <body>
     <header>
@@ -36,9 +36,9 @@
             </nav>
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
-                    <option value="/">English</option>
-                    <option value="/zh/">中文</option>
-                    <option value="/ja/" selected>日本語</option>
+                    <option value="../index.html">English</option>
+                    <option value="../zh/index.html">中文</option>
+                    <option value="index.html" selected>日本語</option>
                 </select>
             </div>
         </div>
@@ -341,11 +341,94 @@
             
             <div class="footer-bottom">
                 <p>&copy; <span id="current-year">2023</span> Upside Down Text. All rights reserved.</p>
-                <p><a href="/privacy">プライバシーポリシー</a> | <a href="/terms">利用規約</a></p>
+                <p><a href="../privacy.html">プライバシーポリシー</a> | <a href="../terms.html">利用規約</a></p>
             </div>
         </div>
     </footer>
 
     <script src="../script.js"></script>
+    <script>
+        // 言語切り替え機能
+        function changeLanguage() {
+            const select = document.getElementById('language-select');
+            const selectedValue = select.value;
+            
+            // 選択された値に基づいて言語コードを決定
+            let langCode = '';
+            if (selectedValue.includes('../zh/')) {
+                langCode = 'zh';
+            } else if (selectedValue.includes('../index.html')) {
+                langCode = 'en';
+            } else {
+                langCode = 'ja';
+            }
+            
+            // Cookieを設定、有効期限は30日間
+            document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
+            
+            // 直接選択されたページに移動
+            window.location.href = selectedValue;
+        }
+        
+        // 初期化
+        window.onload = function() {
+            // 現在の年を更新
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // イベントハンドラをバインド
+            if (inputText) {
+                inputText.addEventListener('input', updateCharCount);
+            }
+            if (flipBtn) {
+                flipBtn.addEventListener('click', () => processText('flip'));
+            }
+            if (reverseBtn) {
+                reverseBtn.addEventListener('click', () => processText('reverse'));
+            }
+            if (mirrorBtn) {
+                mirrorBtn.addEventListener('click', () => processText('mirror'));
+            }
+            if (flipReverseBtn) {
+                flipReverseBtn.addEventListener('click', () => processText('flipReverse'));
+            }
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearAll);
+            }
+            if (copyBtn) {
+                copyBtn.addEventListener('click', copyOutput);
+            }
+            if (showHtmlCheck) {
+                showHtmlCheck.addEventListener('change', toggleHtmlOutput);
+            }
+            if (copyHtmlBtn) {
+                copyHtmlBtn.addEventListener('click', copyHtmlOutput);
+            }
+            if (shareWeixin) {
+                shareWeixin.addEventListener('click', shareToWeixin);
+            }
+            if (shareWeibo) {
+                shareWeibo.addEventListener('click', shareToWeibo);
+            }
+            if (shareQQ) {
+                shareQQ.addEventListener('click', shareToQQ);
+            }
+            
+            // 文字テーブルを初期化
+            initCharTables();
+            
+            // タブ切り替えイベントをバインド
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // 自動言語検出を削除
+            // if (!checkUrlParams()) {
+            //     detectBrowserLanguage();
+            // }
+        };
+    </script>
 </body>
 </html> 

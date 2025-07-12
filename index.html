@@ -15,10 +15,10 @@
     <meta property="og:url" content="https://yourdomain.com">
     <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
     <!-- Language alternates -->
-    <link rel="alternate" hreflang="zh" href="/zh/">
-    <link rel="alternate" hreflang="ja" href="/ja/">
-    <link rel="alternate" hreflang="en" href="/">
-    <link rel="alternate" hreflang="x-default" href="/">
+    <link rel="alternate" hreflang="zh" href="zh/index.html">
+    <link rel="alternate" hreflang="ja" href="ja/index.html">
+    <link rel="alternate" hreflang="en" href="index.html">
+    <link rel="alternate" hreflang="x-default" href="index.html">
 </head>
 <body>
     <header>
@@ -36,9 +36,9 @@
             </nav>
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
-                    <option value="/" selected>English</option>
-                    <option value="/zh/">中文</option>
-                    <option value="/ja/">日本語</option>
+                    <option value="index.html" selected>English</option>
+                    <option value="zh/index.html">中文</option>
+                    <option value="ja/index.html">日本語</option>
                 </select>
             </div>
         </div>
@@ -405,11 +405,94 @@
             
             <div class="footer-bottom">
                 <p>&copy; <span id="current-year">2023</span> Upside Down Text. All rights reserved.</p>
-                <p><a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Use</a></p>
+                <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Use</a></p>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Language switching function
+        function changeLanguage() {
+            const select = document.getElementById('language-select');
+            const selectedValue = select.value;
+            
+            // 根据选择的值确定语言代码
+            let langCode = '';
+            if (selectedValue.includes('/zh/')) {
+                langCode = 'zh';
+            } else if (selectedValue.includes('/ja/')) {
+                langCode = 'ja';
+            } else {
+                langCode = 'en';
+            }
+            
+            // 设置cookie，有效期30天
+            document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
+            
+            // 直接跳转到选择的页面
+            window.location.href = selectedValue;
+        }
+        
+        // 初始化
+        window.onload = function() {
+            // 更新当前年份
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // 绑定事件处理程序
+            if (inputText) {
+                inputText.addEventListener('input', updateCharCount);
+            }
+            if (flipBtn) {
+                flipBtn.addEventListener('click', () => processText('flip'));
+            }
+            if (reverseBtn) {
+                reverseBtn.addEventListener('click', () => processText('reverse'));
+            }
+            if (mirrorBtn) {
+                mirrorBtn.addEventListener('click', () => processText('mirror'));
+            }
+            if (flipReverseBtn) {
+                flipReverseBtn.addEventListener('click', () => processText('flipReverse'));
+            }
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearAll);
+            }
+            if (copyBtn) {
+                copyBtn.addEventListener('click', copyOutput);
+            }
+            if (showHtmlCheck) {
+                showHtmlCheck.addEventListener('change', toggleHtmlOutput);
+            }
+            if (copyHtmlBtn) {
+                copyHtmlBtn.addEventListener('click', copyHtmlOutput);
+            }
+            if (shareWeixin) {
+                shareWeixin.addEventListener('click', shareToWeixin);
+            }
+            if (shareWeibo) {
+                shareWeibo.addEventListener('click', shareToWeibo);
+            }
+            if (shareQQ) {
+                shareQQ.addEventListener('click', shareToQQ);
+            }
+            
+            // 初始化字符表
+            initCharTables();
+            
+            // 绑定选项卡切换事件
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // 移除自动语言检测
+            // if (!checkUrlParams()) {
+            //     detectBrowserLanguage();
+            // }
+        };
+    </script>
 </body>
 </html> 

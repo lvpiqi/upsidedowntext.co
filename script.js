@@ -102,13 +102,6 @@ function detectBrowserLanguage() {
         return;
     }
     
-    // 检查当前URL是否有意图阻止自动重定向
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('noautodetect')) {
-        debugLog('URL包含noautodetect参数，跳过自动检测');
-        return;
-    }
-    
     // 获取浏览器语言
     let browserLang = navigator.language || navigator.userLanguage;
     browserLang = browserLang.toLowerCase();
@@ -177,44 +170,91 @@ function redirectToLanguage(lang) {
     debugLog('查询字符串:', queryString);
     debugLog('哈希:', hash);
     
-    // 构建目标URL
-    let targetUrl;
+    // 检查是否在根目录或语言子目录
+    const isInZh = currentPath.includes('/zh/');
+    const isInJa = currentPath.includes('/ja/');
+    const isInRoot = !isInZh && !isInJa;
     
-    // 根据语言代码构建URL
-    switch (lang) {
-        case 'zh':
-            targetUrl = '/zh/';
-            break;
-        case 'ja':
-            targetUrl = '/ja/';
-            break;
-        default:
-            targetUrl = '/';
-            break;
+    console.log('位置检测:', {isInRoot, isInZh, isInJa});
+    
+    // 提取相对路径部分（移除语言前缀）
+    let relativePath = '';
+    
+    if (isInZh) {
+        relativePath = currentPath.replace(/^\/zh\//, '');
+    } else if (isInJa) {
+        relativePath = currentPath.replace(/^\/ja\//, '');
+    } else {
+        // 从根路径移除第一个斜杠
+        relativePath = currentPath.replace(/^\//, '');
     }
     
-    // 保留除noautodetect外的所有现有查询参数
-    if (queryString) {
-        const urlParams = new URLSearchParams(queryString);
-        urlParams.delete('noautodetect'); // 删除noautodetect参数
-        
-        const remainingParams = urlParams.toString();
-        if (remainingParams) {
-            targetUrl += '?' + remainingParams;
+    // 如果路径为空，默认使用index.html
+    if (!relativePath || relativePath === '' || relativePath === '/') {
+        relativePath = 'index.html';
+    }
+    
+    console.log('提取的相对路径:', relativePath);
+    debugLog('提取的相对路径:', relativePath);
+    
+    // 构建重定向路径
+    let redirectPath = '';
+    
+    // 根据目标语言和当前位置构建路径
+    if (lang === 'zh') {
+        redirectPath = isInRoot ? 'zh/' + relativePath : 
+                       isInJa ? '../zh/' + relativePath : relativePath;
+    } else if (lang === 'ja') {
+        redirectPath = isInRoot ? 'ja/' + relativePath : 
+                       isInZh ? '../ja/' + relativePath : relativePath;
+    } else if (lang === 'en') {
+        redirectPath = isInRoot ? relativePath : '../' + relativePath;
+    }
+    
+    console.log('构建的重定向路径:', redirectPath);
+    
+    // 如果在zh目录中选择zh语言，或在ja目录中选择ja语言，不需要重定向
+    if ((isInZh && lang === 'zh') || (isInJa && lang === 'ja') || (isInRoot && lang === 'en')) {
+        console.log('已在正确的语言目录，无需重定向');
+        debugLog('已在正确的语言目录，无需重定向');
+        return;
+    }
+    
+    if (redirectPath) {
+        // 添加查询参数（排除已有参数）
+        const newQueryParams = new URLSearchParams();
+        if (queryString) {
+            const params = new URLSearchParams(queryString);
+            params.forEach((value, key) => {
+                if (key !== 'noautodetect') {
+                    newQueryParams.append(key, value);
+                }
+            });
         }
+        
+        // 添加防止自动检测的参数
+        newQueryParams.append('noautodetect', '1');
+        
+        const finalQueryString = newQueryParams.toString();
+        const queryPart = finalQueryString ? '?' + finalQueryString : '';
+        
+        // 组合完整URL，包括查询参数和哈希
+        const finalUrl = redirectPath + queryPart + hash;
+        
+        console.log('最终重定向URL:', finalUrl);
+        debugLog('重定向到:', finalUrl);
+        redirectInProgress = true;
+        
+        try {
+            window.location.href = finalUrl;
+        } catch (e) {
+            console.error('重定向时发生错误:', e);
+            alert('语言切换失败，请尝试直接点击语言链接');
+        }
+    } else {
+        console.log('未确定重定向路径，停留在当前页面');
+        debugLog('未确定重定向路径，停留在当前页面');
     }
-    
-    // 添加哈希标记（如果存在）
-    if (hash) {
-        targetUrl += hash;
-    }
-    
-    console.log('重定向到:', targetUrl);
-    debugLog('重定向到:', targetUrl);
-    
-    // 设置重定向标记并执行重定向
-    redirectInProgress = true;
-    window.location.href = targetUrl;
 }
 
 /**
@@ -607,117 +647,3 @@ function shareToQQ(e) {
     const desc = encodeURIComponent(`I created upside down text with Upside Down Text: ${text}`);
     window.open(`https://connect.qq.com/widget/shareqq/index.html?url=${url}&title=${title}&summary=${desc}`, '_blank');
 } 
-
-/**
- * 根据下拉菜单改变语言
- */
-function changeLanguage() {
-    const langSelect = document.getElementById('language-select');
-    const selectedPath = langSelect.value;
-    
-    // 记住用户选择
-    let langCode = 'en';
-    if (selectedPath === '/zh/') {
-        langCode = 'zh';
-    } else if (selectedPath === '/ja/') {
-        langCode = 'ja';
-    }
-    
-    // 设置语言cookie
-    setCookie("selected_language", langCode, 30);
-    manualLanguageSelected = true;
-    
-    // 设置重定向标记并执行重定向
-    redirectInProgress = true;
-    window.location.href = selectedPath;
-} 
-
-// 添加一个函数，用于清理URL中的noautodetect参数
-function cleanURLParameters() {
-    // 检查URL是否包含noautodetect参数
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('noautodetect')) {
-        // 移除noautodetect参数
-        urlParams.delete('noautodetect');
-        
-        // 构建新的URL
-        let newURL = window.location.pathname;
-        const remainingParams = urlParams.toString();
-        
-        if (remainingParams) {
-            newURL += '?' + remainingParams;
-        }
-        
-        // 使用History API更新URL，不刷新页面
-        window.history.replaceState({}, document.title, newURL);
-        debugLog('已从URL中移除noautodetect参数');
-    }
-}
-
-// 初始化
-window.onload = function() {
-    // 首先清理URL参数
-    cleanURLParameters();
-    
-    // 更新当前年份
-    const currentYearElement = document.getElementById('current-year');
-    if (currentYearElement) {
-        currentYearElement.textContent = new Date().getFullYear();
-    }
-    
-    // 绑定事件处理程序
-    if (inputText) {
-        inputText.addEventListener('input', updateCharCount);
-    }
-    if (flipBtn) {
-        flipBtn.addEventListener('click', () => processText('flip'));
-    }
-    if (reverseBtn) {
-        reverseBtn.addEventListener('click', () => processText('reverse'));
-    }
-    if (mirrorBtn) {
-        mirrorBtn.addEventListener('click', () => processText('mirror'));
-    }
-    if (flipReverseBtn) {
-        flipReverseBtn.addEventListener('click', () => processText('flipReverse'));
-    }
-    if (clearBtn) {
-        clearBtn.addEventListener('click', clearAll);
-    }
-    if (copyBtn) {
-        copyBtn.addEventListener('click', copyOutput);
-    }
-    if (showHtmlCheck) {
-        showHtmlCheck.addEventListener('change', toggleHtmlOutput);
-    }
-    if (copyHtmlBtn) {
-        copyHtmlBtn.addEventListener('click', copyHtmlOutput);
-    }
-    if (shareWeixin) {
-        shareWeixin.addEventListener('click', shareToWeixin);
-    }
-    if (shareWeibo) {
-        shareWeibo.addEventListener('click', shareToWeibo);
-    }
-    if (shareQQ) {
-        shareQQ.addEventListener('click', shareToQQ);
-    }
-    
-    // 初始化字符表
-    initCharTables();
-    
-    // 绑定选项卡切换事件
-    if (tabBtns) {
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.getAttribute('data-tab');
-                switchTab(tabId);
-            });
-        });
-    }
-    
-    // 注意：我们不再调用自动检测语言函数
-    // if (!checkUrlParams()) {
-    //     detectBrowserLanguage();
-    // }
-}; 
