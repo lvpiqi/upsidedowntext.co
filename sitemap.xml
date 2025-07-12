@@ -32,13 +32,13 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://upsidedowntext.co/privacy.html</loc>
+    <loc>https://upsidedowntext.co/privacy</loc>
     <lastmod>2023-09-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://upsidedowntext.co/terms.html</loc>
+    <loc>https://upsidedowntext.co/terms</loc>
     <lastmod>2023-09-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>

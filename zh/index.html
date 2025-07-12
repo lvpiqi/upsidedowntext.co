@@ -15,10 +15,10 @@
     <meta property="og:url" content="https://yourdomain.com/zh/">
     <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
     <!-- 语言切换相关标签 -->
-    <link rel="alternate" hreflang="zh" href="index.html">
-    <link rel="alternate" hreflang="ja" href="../ja/index.html">
-    <link rel="alternate" hreflang="en" href="../index.html">
-    <link rel="alternate" hreflang="x-default" href="../index.html">
+    <link rel="alternate" hreflang="zh" href="/zh/">
+    <link rel="alternate" hreflang="ja" href="/ja/">
+    <link rel="alternate" hreflang="en" href="/">
+    <link rel="alternate" hreflang="x-default" href="/">
 </head>
 <body>
     <header>
@@ -36,9 +36,9 @@
             </nav>
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
-                    <option value="../">English</option>
-                    <option value="./" selected>中文</option>
-                    <option value="../ja/">日本語</option>
+                    <option value="/">English</option>
+                    <option value="/zh/" selected>中文</option>
+                    <option value="/ja/">日本語</option>
                 </select>
             </div>
         </div>
@@ -417,26 +417,21 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // 根据选择的值确定语言代码和目标URL
+            // 根据选择的值确定语言代码
             let langCode = '';
-            let targetUrl = '';
-            
-            if (selectedValue.includes('../ja/')) {
+            if (selectedValue.includes('/ja/')) {
                 langCode = 'ja';
-                targetUrl = '../ja/';
-            } else if (selectedValue.includes('../index.html')) {
+            } else if (selectedValue.includes('/index.html')) {
                 langCode = 'en';
-                targetUrl = '../';
             } else {
                 langCode = 'zh';
-                targetUrl = './';
             }
             
             // 设置cookie，有效期30天
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
-            // 直接跳转到目录
-            window.location.href = targetUrl;
+            // 直接跳转到选择的页面
+            window.location.href = selectedValue;
         }
         
         // 初始化

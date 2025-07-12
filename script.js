@@ -170,91 +170,37 @@ function redirectToLanguage(lang) {
     debugLog('查询字符串:', queryString);
     debugLog('哈希:', hash);
     
-    // 检查是否在根目录或语言子目录
-    const isInZh = currentPath.includes('/zh/');
-    const isInJa = currentPath.includes('/ja/');
-    const isInRoot = !isInZh && !isInJa;
+    // 构建目标URL
+    let targetUrl;
     
-    console.log('位置检测:', {isInRoot, isInZh, isInJa});
-    
-    // 提取相对路径部分（移除语言前缀）
-    let relativePath = '';
-    
-    if (isInZh) {
-        relativePath = currentPath.replace(/^\/zh\//, '');
-    } else if (isInJa) {
-        relativePath = currentPath.replace(/^\/ja\//, '');
-    } else {
-        // 从根路径移除第一个斜杠
-        relativePath = currentPath.replace(/^\//, '');
+    // 根据语言代码构建URL
+    switch (lang) {
+        case 'zh':
+            targetUrl = '/zh/';
+            break;
+        case 'ja':
+            targetUrl = '/ja/';
+            break;
+        default:
+            targetUrl = '/';
+            break;
     }
     
-    // 如果路径为空，默认使用index.html
-    if (!relativePath || relativePath === '' || relativePath === '/') {
-        relativePath = 'index.html';
+    // 添加查询字符串和哈希标记（如果存在）
+    if (queryString) {
+        targetUrl += queryString;
     }
     
-    console.log('提取的相对路径:', relativePath);
-    debugLog('提取的相对路径:', relativePath);
-    
-    // 构建重定向路径
-    let redirectPath = '';
-    
-    // 根据目标语言和当前位置构建路径
-    if (lang === 'zh') {
-        redirectPath = isInRoot ? 'zh/' + relativePath : 
-                       isInJa ? '../zh/' + relativePath : relativePath;
-    } else if (lang === 'ja') {
-        redirectPath = isInRoot ? 'ja/' + relativePath : 
-                       isInZh ? '../ja/' + relativePath : relativePath;
-    } else if (lang === 'en') {
-        redirectPath = isInRoot ? relativePath : '../' + relativePath;
+    if (hash) {
+        targetUrl += hash;
     }
     
-    console.log('构建的重定向路径:', redirectPath);
+    console.log('重定向到:', targetUrl);
+    debugLog('重定向到:', targetUrl);
     
-    // 如果在zh目录中选择zh语言，或在ja目录中选择ja语言，不需要重定向
-    if ((isInZh && lang === 'zh') || (isInJa && lang === 'ja') || (isInRoot && lang === 'en')) {
-        console.log('已在正确的语言目录，无需重定向');
-        debugLog('已在正确的语言目录，无需重定向');
-        return;
-    }
-    
-    if (redirectPath) {
-        // 添加查询参数（排除已有参数）
-        const newQueryParams = new URLSearchParams();
-        if (queryString) {
-            const params = new URLSearchParams(queryString);
-            params.forEach((value, key) => {
-                if (key !== 'noautodetect') {
-                    newQueryParams.append(key, value);
-                }
-            });
-        }
-        
-        // 添加防止自动检测的参数
-        newQueryParams.append('noautodetect', '1');
-        
-        const finalQueryString = newQueryParams.toString();
-        const queryPart = finalQueryString ? '?' + finalQueryString : '';
-        
-        // 组合完整URL，包括查询参数和哈希
-        const finalUrl = redirectPath + queryPart + hash;
-        
-        console.log('最终重定向URL:', finalUrl);
-        debugLog('重定向到:', finalUrl);
-        redirectInProgress = true;
-        
-        try {
-            window.location.href = finalUrl;
-        } catch (e) {
-            console.error('重定向时发生错误:', e);
-            alert('语言切换失败，请尝试直接点击语言链接');
-        }
-    } else {
-        console.log('未确定重定向路径，停留在当前页面');
-        debugLog('未确定重定向路径，停留在当前页面');
-    }
+    // 设置重定向标记并执行重定向
+    redirectInProgress = true;
+    window.location.href = targetUrl;
 }
 
 /**
@@ -646,4 +592,27 @@ function shareToQQ(e) {
     const title = encodeURIComponent(`Upside Down Text Generator`);
     const desc = encodeURIComponent(`I created upside down text with Upside Down Text: ${text}`);
     window.open(`https://connect.qq.com/widget/shareqq/index.html?url=${url}&title=${title}&summary=${desc}`, '_blank');
+} 
+
+/**
+ * 根据下拉菜单改变语言
+ */
+function changeLanguage() {
+    const langSelect = document.getElementById('language-select');
+    const selectedPath = langSelect.value;
+    
+    // 设置重定向标记并执行重定向
+    redirectInProgress = true;
+    window.location.href = selectedPath;
+    
+    // 记住用户选择
+    let langCode = 'en';
+    if (selectedPath === '/zh/') {
+        langCode = 'zh';
+    } else if (selectedPath === '/ja/') {
+        langCode = 'ja';
+    }
+    
+    // 设置语言cookie
+    setCookie("selected_language", langCode, 30);
 } 

@@ -1,0 +1,8 @@
+{
+  "routes": [
+    { "pattern": "/zh", "target": "/zh/index.html", "status": 200 },
+    { "pattern": "/ja", "target": "/ja/index.html", "status": 200 }
+  ],
+  "cleanUrls": true,
+  "trailing_slash": true
+} 

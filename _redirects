@@ -1,0 +1,6 @@
+# 语言目录访问
+/zh              /zh/index.html     200
+/ja              /ja/index.html     200
+
+# 404 处理
+/*              /index.html        404 
