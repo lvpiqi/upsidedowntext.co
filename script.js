@@ -23,6 +23,10 @@ const copyHtmlBtn = document.getElementById('copy-html-btn');
 const shareWeixin = document.getElementById('share-weixin');
 const shareWeibo = document.getElementById('share-weibo');
 const shareQQ = document.getElementById('share-qq');
+const shareTwitter = document.getElementById('share-twitter');
+const shareFacebook = document.getElementById('share-facebook');
+const shareYoutube = document.getElementById('share-youtube');
+const shareInstagram = document.getElementById('share-instagram');
 
 // Tab switching
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -646,4 +650,55 @@ function shareToQQ(e) {
     const title = encodeURIComponent(`Upside Down Text Generator`);
     const desc = encodeURIComponent(`I created upside down text with Upside Down Text: ${text}`);
     window.open(`https://connect.qq.com/widget/shareqq/index.html?url=${url}&title=${title}&summary=${desc}`, '_blank');
+}
+
+/**
+ * Share to Twitter
+ * @param {Event} e - Event object
+ */
+function shareToTwitter(e) {
+    e.preventDefault();
+    const text = outputText.textContent;
+    if (!text) {
+        showMessage('Please generate some text before sharing');
+        return;
+    }
+    
+    const url = encodeURIComponent(window.location.href);
+    const textToShare = encodeURIComponent(`Check out this upside down text I created: ${text}`);
+    window.open(`https://twitter.com/intent/tweet?text=${textToShare}&url=${url}`, '_blank');
+}
+
+/**
+ * Share to Facebook
+ * @param {Event} e - Event object
+ */
+function shareToFacebook(e) {
+    e.preventDefault();
+    const text = outputText.textContent;
+    if (!text) {
+        showMessage('Please generate some text before sharing');
+        return;
+    }
+    
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+/**
+ * Share to YouTube
+ * @param {Event} e - Event object
+ */
+function shareToYoutube(e) {
+    e.preventDefault();
+    showMessage('Direct YouTube sharing is not available. Please copy the text and share it manually.');
+}
+
+/**
+ * Share to Instagram
+ * @param {Event} e - Event object
+ */
+function shareToInstagram(e) {
+    e.preventDefault();
+    showMessage('Direct Instagram sharing is not available. Please copy the text and share it manually.');
 } 
