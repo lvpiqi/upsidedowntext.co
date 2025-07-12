@@ -425,12 +425,19 @@
                 langCode = 'zh';
             }
             
+            console.log('设置语言cookie为:', langCode);
+            
             if (langCode) {
                 // 设置cookie记住用户的语言偏好，有效期30天
                 const date = new Date();
                 date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
                 const expires = "expires=" + date.toUTCString();
                 document.cookie = "selected_language=" + langCode + ";" + expires + ";path=/";
+                
+                // 同时设置一个测试cookie以验证cookie功能
+                document.cookie = "test_cookie=works;" + expires + ";path=/";
+                
+                console.log('Cookie已设置，当前cookies:', document.cookie);
             }
             
             // 导航到所选语言页面

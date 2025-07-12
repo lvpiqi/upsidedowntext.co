@@ -361,12 +361,19 @@
                 langCode = 'ja';
             }
             
+            console.log('言語Cookieを設定:', langCode);
+            
             if (langCode) {
                 // ユーザーの言語設定を30日間記憶するCookieを設定
                 const date = new Date();
                 date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
                 const expires = "expires=" + date.toUTCString();
                 document.cookie = "selected_language=" + langCode + ";" + expires + ";path=/";
+                
+                // Cookie機能を確認するためのテストCookieも設定
+                document.cookie = "test_cookie=works;" + expires + ";path=/";
+                
+                console.log('Cookie設定完了、現在のCookies:', document.cookie);
             }
             
             // 選択された言語ページに移動

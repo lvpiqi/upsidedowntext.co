@@ -102,25 +102,51 @@ document.addEventListener('DOMContentLoaded', () => {
 function detectUserLanguage() {
     // If language has been manually selected, redirect to that language
     const selectedLang = getCookie('selected_language');
+    console.log('Selected language from cookie:', selectedLang);
+    
     if (selectedLang) {
         // Only redirect if we're not already on the selected language page
         const currentPath = window.location.pathname;
-        if ((selectedLang === 'zh' && !currentPath.includes('/zh/')) || 
-            (selectedLang === 'ja' && !currentPath.includes('/ja/')) ||
-            (selectedLang === 'en' && (currentPath.includes('/zh/') || currentPath.includes('/ja/')))) {
-            if (selectedLang === 'zh') {
-                window.location.href = currentPath.includes('/ja/') ? '../zh/index.html' : 'zh/index.html';
-            } else if (selectedLang === 'ja') {
-                window.location.href = currentPath.includes('/zh/') ? '../ja/index.html' : 'ja/index.html';
-            } else if (selectedLang === 'en') {
-                window.location.href = '../index.html';
+        console.log('Current path:', currentPath);
+        
+        // Check if we need to redirect based on current path and selected language
+        const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
+        const isInZh = currentPath.includes('/zh/');
+        const isInJa = currentPath.includes('/ja/');
+        
+        let shouldRedirect = false;
+        let redirectPath = '';
+        
+        if (selectedLang === 'zh') {
+            if (!isInZh) { // Not in zh directory
+                shouldRedirect = true;
+                redirectPath = isInRoot ? 'zh/index.html' : '../zh/index.html';
+            }
+        } else if (selectedLang === 'ja') {
+            if (!isInJa) { // Not in ja directory
+                shouldRedirect = true;
+                redirectPath = isInRoot ? 'ja/index.html' : '../ja/index.html';
+            }
+        } else if (selectedLang === 'en') {
+            if (!isInRoot) { // Not in root directory (en)
+                shouldRedirect = true;
+                redirectPath = '../index.html';
             }
         }
+        
+        if (shouldRedirect) {
+            console.log('Redirecting to:', redirectPath);
+            window.location.href = redirectPath;
+        } else {
+            console.log('No redirect needed, already in correct language section');
+        }
+        
         return;
     }
     
     // Get browser language
     const userLang = navigator.language || navigator.userLanguage;
+    console.log('Browser language:', userLang);
     
     // Current page URL path
     const currentPath = window.location.pathname;
@@ -162,18 +188,25 @@ function setCookie(name, value, days) {
  * Get cookie
  */
 function getCookie(name) {
+    console.log('Getting cookie:', name);
+    console.log('All cookies:', document.cookie);
+    
     const cname = name + "=";
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(';');
+    
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
         while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
         if (c.indexOf(cname) === 0) {
-            return c.substring(cname.length, c.length);
+            const value = c.substring(cname.length, c.length);
+            console.log('Found cookie value:', value);
+            return value;
         }
     }
+    console.log('Cookie not found');
     return "";
 }
 
