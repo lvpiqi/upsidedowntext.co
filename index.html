@@ -416,26 +416,23 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // Save the selected language in a cookie
-            let langCode = '';
-            let targetUrl = '';
-            
+            // 直接设置cookie并跳转
             if (selectedValue.includes('/zh/')) {
-                langCode = 'zh';
-                targetUrl = 'zh/index.html?lang=zh';
+                // 设置中文cookie
+                document.cookie = "selected_language=zh; path=/; max-age=" + (30 * 24 * 60 * 60);
+                console.log('设置语言为中文，跳转到中文版');
+                window.location.href = 'zh/index.html?noredirect=1';
             } else if (selectedValue.includes('/ja/')) {
-                langCode = 'ja';
-                targetUrl = 'ja/index.html?lang=ja';
+                // 设置日语cookie
+                document.cookie = "selected_language=ja; path=/; max-age=" + (30 * 24 * 60 * 60);
+                console.log('设置语言为日语，跳转到日语版');
+                window.location.href = 'ja/index.html?noredirect=1';
             } else {
-                langCode = 'en';
-                targetUrl = 'index.html?lang=en';
+                // 设置英语cookie
+                document.cookie = "selected_language=en; path=/; max-age=" + (30 * 24 * 60 * 60);
+                console.log('设置语言为英语，跳转到英语版');
+                window.location.href = 'index.html?noredirect=1';
             }
-            
-            console.log('Setting language to:', langCode);
-            console.log('Redirecting to:', targetUrl);
-            
-            // Navigate to the selected language page with language parameter
-            window.location.href = targetUrl;
         }
     </script>
 </body>

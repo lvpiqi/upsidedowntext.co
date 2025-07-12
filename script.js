@@ -56,6 +56,9 @@ const flipMap = {
     '/': '\\', '‿': '⁀', '⁅': '⁆', '∴': '∵'
 };
 
+// 添加一个全局变量，用于防止循环重定向
+let redirectInProgress = false;
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     // Set current year
@@ -100,12 +103,24 @@ document.addEventListener('DOMContentLoaded', () => {
  * Detect user browser language and redirect to appropriate language version
  */
 function detectUserLanguage() {
+    // 如果已经在进行重定向，则不再继续
+    if (redirectInProgress) {
+        console.log('Redirect already in progress, skipping');
+        return;
+    }
+    
+    // 检查URL中是否有noredirect参数，如果有则不进行重定向
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('noredirect')) {
+        console.log('Redirect prevention parameter found, skipping redirect');
+        return;
+    }
+    
     // 调试信息：打印完整的当前URL
     console.log('Current URL:', window.location.href);
     console.log('Current pathname:', window.location.pathname);
     
     // 检查是否有语言切换请求参数
-    const urlParams = new URLSearchParams(window.location.search);
     const langParam = urlParams.get('lang');
     if (langParam) {
         console.log('Language parameter found in URL:', langParam);
@@ -135,7 +150,11 @@ function detectUserLanguage() {
             }
         }
         
+        // 添加noredirect参数，防止循环重定向
+        newUrl += '?noredirect=1';
+        
         console.log('Redirecting to (from URL param):', newUrl);
+        redirectInProgress = true;
         window.location.href = newUrl;
         return;
     }
@@ -178,8 +197,9 @@ function detectUserLanguage() {
         
         if (shouldRedirect) {
             console.log('Redirecting to:', redirectPath);
-            // 添加一个随机参数防止缓存问题
-            redirectPath += '?nocache=' + new Date().getTime();
+            // 添加noredirect参数，防止循环重定向
+            redirectPath += '?noredirect=1';
+            redirectInProgress = true;
             window.location.href = redirectPath;
         } else {
             console.log('No redirect needed, already in correct language section');
@@ -188,38 +208,9 @@ function detectUserLanguage() {
         return;
     }
     
-    // Get browser language
-    const userLang = navigator.language || navigator.userLanguage;
-    console.log('Browser language:', userLang);
-    
-    // Current page URL path
-    const currentPath = window.location.pathname;
-    
-    // If not in a language subdirectory, no need to redirect (already in English/default)
-    if (!currentPath.includes('/zh/') && !currentPath.includes('/ja/')) {
-        // Already in English version (root directory)
-        console.log('Already in English version, no redirect needed');
-        return;
-    }
-    
-    // In a language subdirectory, redirect based on browser language
-    if (userLang.startsWith('zh')) {
-        // If browser language is Chinese and not in Chinese directory
-        if (!currentPath.includes('/zh/')) {
-            console.log('Browser language is Chinese, redirecting to Chinese version');
-            window.location.href = '../zh/index.html';
-        }
-    } else if (userLang.startsWith('ja')) {
-        // If browser language is Japanese and not in Japanese directory
-        if (!currentPath.includes('/ja/')) {
-            console.log('Browser language is Japanese, redirecting to Japanese version');
-            window.location.href = '../ja/index.html';
-        }
-    } else {
-        // Default to English for other languages
-        console.log('Browser language is not Chinese or Japanese, redirecting to English version');
-        window.location.href = '../index.html';
-    }
+    // 如果没有选择语言，则不进行自动重定向
+    console.log('No language selection found, skipping auto-redirect');
+    return;
 }
 
 /**
