@@ -59,7 +59,6 @@ const flipMap = {
 // 添加一个全局变量，用于防止循环重定向
 let redirectInProgress = false;
 let debugMode = true; // 开启调试模式
-let manualLanguageSelected = false; // 添加一个标志，表示用户是否手动选择了语言
 
 // 添加调试函数
 function debugLog(...args) {
@@ -76,12 +75,6 @@ function setCookie(name, value, days) {
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    
-    // 如果设置的是语言cookie，则标记为手动选择
-    if (name === "selected_language") {
-        manualLanguageSelected = true;
-        debugLog('Manual language selection flag set to true');
-    }
 }
 
 /**
@@ -92,10 +85,6 @@ function redirectToLanguage(lang) {
         debugLog('Redirect already in progress, skipping');
         return;
     }
-    
-    // 确保设置了手动选择标志
-    manualLanguageSelected = true;
-    debugLog('Manual language selection flag set in redirectToLanguage');
     
     // 获取当前完整路径
     const currentPath = window.location.pathname;
@@ -161,7 +150,6 @@ function redirectToLanguage(lang) {
                 }
             });
         }
-        newQueryParams.append('noredirect', '1'); // 添加noredirect标志
         
         const finalQueryString = newQueryParams.toString();
         const queryPart = finalQueryString ? '?' + finalQueryString : '';

@@ -36,7 +36,7 @@
                 <select id="language-select" onchange="changeLanguage()">
                     <option value="../index.html">English</option>
                     <option value="../zh/index.html">中文 (Chinese)</option>
-                    <option value="../zh/index.html" selected>日本語 (Japanese)</option>
+                    <option value="index.html" selected>日本語 (Japanese)</option>
                 </select>
             </div>
         </div>
@@ -353,7 +353,7 @@
             
             // 選択された値に基づいて言語コードを決定
             let langCode = '';
-            if (selectedValue.includes('/zh/')) {
+            if (selectedValue.includes('../zh/')) {
                 langCode = 'zh';
             } else if (selectedValue.includes('../index.html')) {
                 langCode = 'en';

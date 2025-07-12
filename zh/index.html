@@ -35,7 +35,7 @@
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
                     <option value="../index.html">English</option>
-                    <option value="../zh/iindex.html" selected>中文 (Chinese)</option>
+                    <option value="index.html" selected>中文 (Chinese)</option>
                     <option value="../ja/index.html">日本語 (Japanese)</option>
                 </select>
             </div>
@@ -417,7 +417,7 @@
             
             // 根据选择的值确定语言代码
             let langCode = '';
-            if (selectedValue.includes('/ja/')) {
+            if (selectedValue.includes('../ja/')) {
                 langCode = 'ja';
             } else if (selectedValue.includes('../index.html')) {
                 langCode = 'en';
