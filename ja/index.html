@@ -351,22 +351,25 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // 直接Cookieを設定して移動
+            // 選択された値に基づいて言語コードを決定
+            let langCode = '';
             if (selectedValue.includes('../zh/')) {
-                // 中国語Cookieを設定
-                document.cookie = "selected_language=zh; path=/; max-age=" + (30 * 24 * 60 * 60);
-                console.log('言語を中国語に設定、中国語版に移動');
-                window.location.href = '../zh/index.html?noredirect=1';
+                langCode = 'zh';
             } else if (selectedValue.includes('../index.html')) {
-                // 英語Cookieを設定
-                document.cookie = "selected_language=en; path=/; max-age=" + (30 * 24 * 60 * 60);
-                console.log('言語を英語に設定、英語版に移動');
-                window.location.href = '../index.html?noredirect=1';
+                langCode = 'en';
             } else {
-                // 日本語Cookieを設定
-                document.cookie = "selected_language=ja; path=/; max-age=" + (30 * 24 * 60 * 60);
-                console.log('言語を日本語に設定、日本語版に移動');
-                window.location.href = 'index.html?noredirect=1';
+                langCode = 'ja';
+            }
+            
+            // Cookieを設定、有効期間30日
+            document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
+            
+            // リダイレクト関数を呼び出し
+            if (typeof redirectToLanguage === 'function') {
+                redirectToLanguage(langCode);
+            } else {
+                // 関数が利用できない場合は従来の方法でリダイレクト
+                window.location.href = selectedValue + "?noredirect=1";
             }
         }
     </script>

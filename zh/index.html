@@ -415,22 +415,25 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // 直接设置cookie并跳转
+            // 根据选择的值确定语言代码
+            let langCode = '';
             if (selectedValue.includes('/ja/')) {
-                // 设置日语cookie
-                document.cookie = "selected_language=ja; path=/; max-age=" + (30 * 24 * 60 * 60);
-                console.log('设置语言为日语，跳转到日语版');
-                window.location.href = '../ja/index.html?noredirect=1';
+                langCode = 'ja';
             } else if (selectedValue.includes('../index.html')) {
-                // 设置英语cookie
-                document.cookie = "selected_language=en; path=/; max-age=" + (30 * 24 * 60 * 60);
-                console.log('设置语言为英语，跳转到英语版');
-                window.location.href = '../index.html?noredirect=1';
+                langCode = 'en';
             } else {
-                // 设置中文cookie
-                document.cookie = "selected_language=zh; path=/; max-age=" + (30 * 24 * 60 * 60);
-                console.log('设置语言为中文，跳转到中文版');
-                window.location.href = 'index.html?noredirect=1';
+                langCode = 'zh';
+            }
+            
+            // 设置cookie，有效期30天
+            document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
+            
+            // 调用重定向函数
+            if (typeof redirectToLanguage === 'function') {
+                redirectToLanguage(langCode);
+            } else {
+                // 如果函数不可用，则使用传统方式重定向
+                window.location.href = selectedValue + "?noredirect=1";
             }
         }
     </script>
