@@ -186,11 +186,22 @@ function redirectToLanguage(lang) {
             break;
     }
     
-    // 添加查询字符串和哈希标记（如果存在）
+    // 添加查询参数
+    // 添加noautodetect参数防止循环自动检测，但它会在页面加载后通过cleanURLParameters函数自动移除
+    targetUrl += '?noautodetect=1';
+    
+    // 添加其他查询字符串参数（排除noautodetect）
     if (queryString) {
-        targetUrl += queryString;
+        const urlParams = new URLSearchParams(queryString);
+        urlParams.delete('noautodetect'); // 移除可能已存在的noautodetect
+        
+        const remainingParams = urlParams.toString();
+        if (remainingParams) {
+            targetUrl += '&' + remainingParams;
+        }
     }
     
+    // 添加哈希标记（如果存在）
     if (hash) {
         targetUrl += hash;
     }
@@ -616,3 +627,93 @@ function changeLanguage() {
     // 设置语言cookie
     setCookie("selected_language", langCode, 30);
 } 
+
+// 添加一个函数，用于清理URL中的noautodetect参数
+function cleanURLParameters() {
+    // 检查URL是否包含noautodetect参数
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('noautodetect')) {
+        // 移除noautodetect参数
+        urlParams.delete('noautodetect');
+        
+        // 构建新的URL
+        let newURL = window.location.pathname;
+        const remainingParams = urlParams.toString();
+        
+        if (remainingParams) {
+            newURL += '?' + remainingParams;
+        }
+        
+        // 使用History API更新URL，不刷新页面
+        window.history.replaceState({}, document.title, newURL);
+        debugLog('已从URL中移除noautodetect参数');
+    }
+}
+
+// 初始化
+window.onload = function() {
+    // 首先清理URL参数
+    cleanURLParameters();
+    
+    // 更新当前年份
+    const currentYearElement = document.getElementById('current-year');
+    if (currentYearElement) {
+        currentYearElement.textContent = new Date().getFullYear();
+    }
+    
+    // 绑定事件处理程序
+    if (inputText) {
+        inputText.addEventListener('input', updateCharCount);
+    }
+    if (flipBtn) {
+        flipBtn.addEventListener('click', () => processText('flip'));
+    }
+    if (reverseBtn) {
+        reverseBtn.addEventListener('click', () => processText('reverse'));
+    }
+    if (mirrorBtn) {
+        mirrorBtn.addEventListener('click', () => processText('mirror'));
+    }
+    if (flipReverseBtn) {
+        flipReverseBtn.addEventListener('click', () => processText('flipReverse'));
+    }
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearAll);
+    }
+    if (copyBtn) {
+        copyBtn.addEventListener('click', copyOutput);
+    }
+    if (showHtmlCheck) {
+        showHtmlCheck.addEventListener('change', toggleHtmlOutput);
+    }
+    if (copyHtmlBtn) {
+        copyHtmlBtn.addEventListener('click', copyHtmlOutput);
+    }
+    if (shareWeixin) {
+        shareWeixin.addEventListener('click', shareToWeixin);
+    }
+    if (shareWeibo) {
+        shareWeibo.addEventListener('click', shareToWeibo);
+    }
+    if (shareQQ) {
+        shareQQ.addEventListener('click', shareToQQ);
+    }
+    
+    // 初始化字符表
+    initCharTables();
+    
+    // 绑定选项卡切换事件
+    if (tabBtns) {
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+    }
+    
+    // 注意：我们不再调用自动检测语言函数
+    // if (!checkUrlParams()) {
+    //     detectBrowserLanguage();
+    // }
+}; 

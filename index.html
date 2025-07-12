@@ -405,7 +405,7 @@
             
             <div class="footer-bottom">
                 <p>&copy; <span id="current-year">2023</span> Upside Down Text. All rights reserved.</p>
-                <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Use</a></p>
+                <p><a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Use</a></p>
             </div>
         </div>
     </footer>
@@ -433,66 +433,6 @@
             // 直接跳转到选择的页面
             window.location.href = selectedValue;
         }
-        
-        // 初始化
-        window.onload = function() {
-            // 更新当前年份
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // 绑定事件处理程序
-            if (inputText) {
-                inputText.addEventListener('input', updateCharCount);
-            }
-            if (flipBtn) {
-                flipBtn.addEventListener('click', () => processText('flip'));
-            }
-            if (reverseBtn) {
-                reverseBtn.addEventListener('click', () => processText('reverse'));
-            }
-            if (mirrorBtn) {
-                mirrorBtn.addEventListener('click', () => processText('mirror'));
-            }
-            if (flipReverseBtn) {
-                flipReverseBtn.addEventListener('click', () => processText('flipReverse'));
-            }
-            if (clearBtn) {
-                clearBtn.addEventListener('click', clearAll);
-            }
-            if (copyBtn) {
-                copyBtn.addEventListener('click', copyOutput);
-            }
-            if (showHtmlCheck) {
-                showHtmlCheck.addEventListener('change', toggleHtmlOutput);
-            }
-            if (copyHtmlBtn) {
-                copyHtmlBtn.addEventListener('click', copyHtmlOutput);
-            }
-            if (shareWeixin) {
-                shareWeixin.addEventListener('click', shareToWeixin);
-            }
-            if (shareWeibo) {
-                shareWeibo.addEventListener('click', shareToWeibo);
-            }
-            if (shareQQ) {
-                shareQQ.addEventListener('click', shareToQQ);
-            }
-            
-            // 初始化字符表
-            initCharTables();
-            
-            // 绑定选项卡切换事件
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tabId = btn.getAttribute('data-tab');
-                    switchTab(tabId);
-                });
-            });
-            
-            // 移除自动语言检测
-            // if (!checkUrlParams()) {
-            //     detectBrowserLanguage();
-            // }
-        };
     </script>
 </body>
 </html> 
