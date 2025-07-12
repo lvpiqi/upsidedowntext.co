@@ -68,106 +68,21 @@ function debugLog(...args) {
     }
 }
 
-// 添加一个函数来检查当前页面的语言
-function getCurrentLanguage() {
-    const path = window.location.pathname;
-    if (path.includes('/zh/')) return 'zh';
-    if (path.includes('/ja/')) return 'ja';
-    return 'en';
-}
-
-// 添加一个函数来检查是否需要重定向
-function needsRedirect(selectedLang) {
-    const currentLang = getCurrentLanguage();
-    debugLog('Current language:', currentLang, 'Selected language:', selectedLang);
-    return currentLang !== selectedLang;
-}
-
-// Initialization
-document.addEventListener('DOMContentLoaded', () => {
-    // Set current year
-    document.getElementById('current-year').textContent = new Date().getFullYear();
+/**
+ * Set cookie
+ */
+function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
     
-    // 先检查是否有语言cookie，有则标记为手动选择
-    const cookieLang = getCookie('selected_language');
-    if (cookieLang) {
+    // 如果设置的是语言cookie，则标记为手动选择
+    if (name === "selected_language") {
         manualLanguageSelected = true;
-        debugLog('Manual language selection flag set from existing cookie:', cookieLang);
+        debugLog('Manual language selection flag set to true');
     }
-    
-    // 检查URL参数，如果有手动选择的语言参数，则设置cookie
-    const urlParams = new URLSearchParams(window.location.search);
-    const langParam = urlParams.get('lang');
-    
-    if (langParam) {
-        debugLog('Language parameter found in URL:', langParam);
-        // 设置cookie
-        setCookie('selected_language', langParam, 30);
-        manualLanguageSelected = true; // 标记用户已手动选择语言
-        debugLog('Cookie set for language:', langParam);
-        
-        // 移除URL参数并刷新页面
-        if (!urlParams.has('noredirect')) {
-            const newUrl = window.location.pathname + '?noredirect=1';
-            debugLog('Refreshing page without language parameter:', newUrl);
-            window.location.href = newUrl;
-            return;
-        }
-    }
-    
-    // 检查是否有手动选择的语言cookie
-    const selectedLang = cookieLang || '';
-    debugLog('Selected language from cookie:', selectedLang);
-    
-    // 如果有手动选择的语言，并且当前页面不是该语言，则重定向
-    if (selectedLang && !urlParams.has('noredirect')) {
-        if (needsRedirect(selectedLang)) {
-            debugLog('Need to redirect based on selected language');
-            redirectToLanguage(selectedLang);
-            return;
-        } else {
-            debugLog('Already on the correct language page');
-        }
-    } 
-    // 如果没有手动选择的语言，并且没有禁止重定向，则根据浏览器语言自动选择
-    else if (!selectedLang && !urlParams.has('noredirect') && !manualLanguageSelected) {
-        debugLog('No selected language, checking browser language');
-        detectBrowserLanguage();
-    } else {
-        debugLog('Skipping language detection due to noredirect parameter or manual selection');
-    }
-    
-    // Initialize character tables
-    initCharTables();
-    
-    // Input text listener
-    inputText.addEventListener('input', updateCharCount);
-    
-    // Button click events
-    flipBtn.addEventListener('click', () => processText('flip'));
-    reverseBtn.addEventListener('click', () => processText('reverse'));
-    mirrorBtn.addEventListener('click', () => processText('mirror'));
-    flipReverseBtn.addEventListener('click', () => processText('flipReverse'));
-    clearBtn.addEventListener('click', clearAll);
-    copyBtn.addEventListener('click', copyOutput);
-    copyHtmlBtn.addEventListener('click', copyHtmlOutput);
-    
-    // Show HTML option
-    showHtmlCheck.addEventListener('change', toggleHtmlOutput);
-    
-    // Social share button click events
-    shareWeixin.addEventListener('click', shareToWeixin);
-    shareWeibo.addEventListener('click', shareToWeibo);
-    shareQQ.addEventListener('click', shareToQQ);
-    
-    // Tab switching events
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabId = btn.getAttribute('data-tab');
-            switchTab(tabId);
-        });
-    });
-});
+}
 
 /**
  * 根据选择的语言重定向到相应页面
@@ -215,102 +130,6 @@ function redirectToLanguage(lang) {
         redirectPath += '?noredirect=1';
         redirectInProgress = true;
         window.location.href = redirectPath;
-    }
-}
-
-/**
- * 根据浏览器语言自动选择语言
- */
-function detectBrowserLanguage() {
-    // 如果用户已手动选择语言，则不进行浏览器语言检测
-    if (manualLanguageSelected) {
-        debugLog('Manual language selection detected, skipping browser language detection');
-        return;
-    }
-
-    const userLang = navigator.language || navigator.userLanguage;
-    debugLog('Browser language:', userLang);
-    
-    let detectedLang = 'en'; // 默认为英语
-    
-    if (userLang.startsWith('zh')) {
-        detectedLang = 'zh';
-    } else if (userLang.startsWith('ja')) {
-        detectedLang = 'ja';
-    }
-    
-    debugLog('Detected language:', detectedLang);
-    
-    // 如果检测到的语言与当前页面不同，则重定向
-    if (needsRedirect(detectedLang)) {
-        debugLog('Redirecting based on browser language');
-        // 注意：这里不设置manualLanguageSelected，因为这是自动检测
-        const currentPath = window.location.pathname;
-        const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
-        
-        // 获取当前页面的文件名（如果没有则默认为index.html）
-        let currentFile = 'index.html';
-        const pathParts = currentPath.split('/');
-        if (pathParts.length > 0) {
-            const lastPart = pathParts[pathParts.length - 1];
-            if (lastPart && lastPart.includes('.html')) {
-                currentFile = lastPart;
-            }
-        }
-        
-        debugLog('Current file detected for auto-redirect:', currentFile);
-        
-        let redirectPath = '';
-        
-        if (detectedLang === 'zh') {
-            redirectPath = isInRoot ? 'zh/' + currentFile : '../zh/' + currentFile;
-        } else if (detectedLang === 'ja') {
-            redirectPath = isInRoot ? 'ja/' + currentFile : '../ja/' + currentFile;
-        } else if (detectedLang === 'en') {
-            redirectPath = isInRoot ? currentFile : '../' + currentFile;
-        }
-        
-        if (redirectPath) {
-            debugLog('Auto-redirecting to:', redirectPath);
-            redirectPath += '?noredirect=1';
-            redirectInProgress = true;
-            window.location.href = redirectPath;
-        }
-    } else {
-        debugLog('Already on the correct language page based on browser language');
-    }
-}
-
-/**
- * Detect user browser language and redirect to appropriate language version
- * @deprecated 已被新的语言检测逻辑替代
- */
-function detectUserLanguage() {
-    debugLog('Old detectUserLanguage function called, using new logic instead');
-    
-    // 检查是否有手动选择的语言cookie
-    const selectedLang = getCookie('selected_language');
-    
-    if (selectedLang) {
-        redirectToLanguage(selectedLang);
-    } else {
-        detectBrowserLanguage();
-    }
-}
-
-/**
- * Set cookie
- */
-function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    
-    // 如果设置的是语言cookie，则标记为手动选择
-    if (name === "selected_language") {
-        manualLanguageSelected = true;
-        debugLog('Manual language selection flag set to true');
     }
 }
 
