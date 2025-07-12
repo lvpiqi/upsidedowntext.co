@@ -364,18 +364,8 @@
             // Cookieを設定、有効期間30日
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
-            // 手動選択フラグを設定（グローバル変数が存在する場合）
-            if (typeof manualLanguageSelected !== 'undefined') {
-                manualLanguageSelected = true;
-            }
-            
-            // リダイレクト関数を呼び出し
-            if (typeof redirectToLanguage === 'function') {
-                redirectToLanguage(langCode);
-            } else {
-                // 関数が利用できない場合は従来の方法でリダイレクト
-                window.location.href = selectedValue + "?noredirect=1";
-            }
+            // redirectToLanguage関数を直接呼び出す
+            redirectToLanguage(langCode);
         }
     </script>
 </body>

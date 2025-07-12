@@ -88,7 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set current year
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
-    // 先检查URL参数，如果有手动选择的语言参数，则设置cookie
+    // 先检查是否有语言cookie，有则标记为手动选择
+    const cookieLang = getCookie('selected_language');
+    if (cookieLang) {
+        manualLanguageSelected = true;
+        debugLog('Manual language selection flag set from existing cookie:', cookieLang);
+    }
+    
+    // 检查URL参数，如果有手动选择的语言参数，则设置cookie
     const urlParams = new URLSearchParams(window.location.search);
     const langParam = urlParams.get('lang');
     
@@ -109,12 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // 检查是否有手动选择的语言cookie
-    const selectedLang = getCookie('selected_language');
+    const selectedLang = cookieLang || '';
     debugLog('Selected language from cookie:', selectedLang);
     
     // 如果有手动选择的语言，并且当前页面不是该语言，则重定向
     if (selectedLang && !urlParams.has('noredirect')) {
-        manualLanguageSelected = true; // 标记用户已手动选择语言
         if (needsRedirect(selectedLang)) {
             debugLog('Need to redirect based on selected language');
             redirectToLanguage(selectedLang);
@@ -172,6 +178,10 @@ function redirectToLanguage(lang) {
         return;
     }
     
+    // 确保设置了手动选择标志
+    manualLanguageSelected = true;
+    debugLog('Manual language selection flag set in redirectToLanguage');
+    
     const currentPath = window.location.pathname;
     const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
     
@@ -197,6 +207,12 @@ function redirectToLanguage(lang) {
  * 根据浏览器语言自动选择语言
  */
 function detectBrowserLanguage() {
+    // 如果用户已手动选择语言，则不进行浏览器语言检测
+    if (manualLanguageSelected) {
+        debugLog('Manual language selection detected, skipping browser language detection');
+        return;
+    }
+
     const userLang = navigator.language || navigator.userLanguage;
     debugLog('Browser language:', userLang);
     
@@ -213,7 +229,26 @@ function detectBrowserLanguage() {
     // 如果检测到的语言与当前页面不同，则重定向
     if (needsRedirect(detectedLang)) {
         debugLog('Redirecting based on browser language');
-        redirectToLanguage(detectedLang);
+        // 注意：这里不设置manualLanguageSelected，因为这是自动检测
+        const currentPath = window.location.pathname;
+        const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
+        
+        let redirectPath = '';
+        
+        if (detectedLang === 'zh') {
+            redirectPath = isInRoot ? 'zh/index.html' : '../zh/index.html';
+        } else if (detectedLang === 'ja') {
+            redirectPath = isInRoot ? 'ja/index.html' : '../ja/index.html';
+        } else if (detectedLang === 'en') {
+            redirectPath = isInRoot ? 'index.html' : '../index.html';
+        }
+        
+        if (redirectPath) {
+            debugLog('Auto-redirecting to:', redirectPath);
+            redirectPath += '?noredirect=1';
+            redirectInProgress = true;
+            window.location.href = redirectPath;
+        }
     } else {
         debugLog('Already on the correct language page based on browser language');
     }

@@ -428,18 +428,8 @@
             // 设置cookie，有效期30天
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
-            // 设置手动选择标志（如果全局变量存在）
-            if (typeof manualLanguageSelected !== 'undefined') {
-                manualLanguageSelected = true;
-            }
-            
-            // 调用重定向函数
-            if (typeof redirectToLanguage === 'function') {
-                redirectToLanguage(langCode);
-            } else {
-                // 如果函数不可用，则使用传统方式重定向
-                window.location.href = selectedValue + "?noredirect=1";
-            }
+            // 直接调用redirectToLanguage函数
+            redirectToLanguage(langCode);
         }
     </script>
 </body>
