@@ -136,9 +136,24 @@ function detectBrowserLanguage() {
 }
 
 /**
+ * 手动切换语言（提供直接调用方法）
+ */
+function switchToLanguage(lang) {
+    console.log('手动切换语言到:', lang);
+    // 设置cookie
+    setCookie("selected_language", lang, 30);
+    // 标记为手动选择
+    manualLanguageSelected = true;
+    // 执行重定向
+    redirectToLanguage(lang);
+}
+
+/**
  * 根据选择的语言重定向到相应页面
  */
 function redirectToLanguage(lang) {
+    console.log('开始重定向到语言:', lang);
+    
     if (redirectInProgress) {
         debugLog('重定向已在进行中，跳过');
         return;
@@ -149,6 +164,8 @@ function redirectToLanguage(lang) {
     const queryString = window.location.search;
     const hash = window.location.hash;
     
+    console.log('当前路径:', currentPath);
+    console.log('查询字符串:', queryString);
     debugLog('当前路径:', currentPath);
     debugLog('查询字符串:', queryString);
     debugLog('哈希:', hash);
@@ -157,6 +174,8 @@ function redirectToLanguage(lang) {
     const isInZh = currentPath.includes('/zh/');
     const isInJa = currentPath.includes('/ja/');
     const isInRoot = !isInZh && !isInJa;
+    
+    console.log('位置检测:', {isInRoot, isInZh, isInJa});
     
     // 提取相对路径部分（移除语言前缀）
     let relativePath = '';
@@ -175,6 +194,7 @@ function redirectToLanguage(lang) {
         relativePath = 'index.html';
     }
     
+    console.log('提取的相对路径:', relativePath);
     debugLog('提取的相对路径:', relativePath);
     
     // 构建重定向路径
@@ -191,8 +211,11 @@ function redirectToLanguage(lang) {
         redirectPath = isInRoot ? relativePath : '../' + relativePath;
     }
     
+    console.log('构建的重定向路径:', redirectPath);
+    
     // 如果在zh目录中选择zh语言，或在ja目录中选择ja语言，不需要重定向
     if ((isInZh && lang === 'zh') || (isInJa && lang === 'ja') || (isInRoot && lang === 'en')) {
+        console.log('已在正确的语言目录，无需重定向');
         debugLog('已在正确的语言目录，无需重定向');
         return;
     }
@@ -218,10 +241,18 @@ function redirectToLanguage(lang) {
         // 组合完整URL，包括查询参数和哈希
         const finalUrl = redirectPath + queryPart + hash;
         
+        console.log('最终重定向URL:', finalUrl);
         debugLog('重定向到:', finalUrl);
         redirectInProgress = true;
-        window.location.href = finalUrl;
+        
+        try {
+            window.location.href = finalUrl;
+        } catch (e) {
+            console.error('重定向时发生错误:', e);
+            alert('语言切换失败，请尝试直接点击语言链接');
+        }
     } else {
+        console.log('未确定重定向路径，停留在当前页面');
         debugLog('未确定重定向路径，停留在当前页面');
     }
 }

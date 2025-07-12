@@ -15,8 +15,10 @@
     <meta property="og:url" content="https://yourdomain.com/ja/">
     <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
     <!-- 言語切り替え用メタタグ -->
-    <link rel="alternate" hreflang="zh-CN" href="../index.html">
+    <link rel="alternate" hreflang="zh" href="../zh/index.html">
     <link rel="alternate" hreflang="ja" href="index.html">
+    <link rel="alternate" hreflang="en" href="../index.html">
+    <link rel="alternate" hreflang="x-default" href="../index.html">
 </head>
 <body>
     <header>
@@ -35,8 +37,8 @@
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
                     <option value="../index.html">English</option>
-                    <option value="../zh/index.html">中文 (Chinese)</option>
-                    <option value="index.html" selected>日本語 (Japanese)</option>
+                    <option value="../zh/index.html">中文</option>
+                    <option value="index.html" selected>日本語</option>
                 </select>
             </div>
         </div>
@@ -364,8 +366,8 @@
             // Cookieを設定、有効期限は30日間
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
-            // redirectToLanguage関数を直接呼び出す
-            redirectToLanguage(langCode);
+            // 直接選択されたページに移動
+            window.location.href = selectedValue;
         }
         
         // 初期化
@@ -422,11 +424,10 @@
                 });
             });
             
-            // 自動言語検出が必要かどうかを確認
-            // URLにnoautodetectパラメータがある場合、自動検出をスキップ
-            if (!checkUrlParams()) {
-                detectBrowserLanguage();
-            }
+            // 自動言語検出を削除
+            // if (!checkUrlParams()) {
+            //     detectBrowserLanguage();
+            // }
         };
     </script>
 </body>

@@ -105,10 +105,11 @@ header h1 {
 /* 语言切换器样式 */
 .language-switcher {
     margin-top: 1rem;
+    text-align: center;
 }
 
 .language-switcher select {
-    padding: 0.5rem;
+    padding: 0.5rem 2rem 0.5rem 1rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
@@ -117,6 +118,12 @@ header h1 {
     cursor: pointer;
     outline: none;
     transition: var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0,0 L12,0 L6,6 Z" fill="white"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
 }
 
 .language-switcher select:hover {
@@ -985,4 +992,14 @@ footer {
     .policy-section h3 {
         font-size: 1.25rem;
     }
+} 
+
+/* 语言切换样式 */
+.language-switcher {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.lang-link {
+    display: none; /* 隐藏链接，改用下拉框 */
 } 

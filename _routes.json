@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "include": [
+    "/*"
+  ],
+  "exclude": [
+    "/robots.txt",
+    "/sitemap.xml",
+    "/style.css",
+    "/script.js"
+  ],
+  "routes": [
+    {
+      "src": "^/zh/?$",
+      "dest": "/zh/index.html"
+    },
+    {
+      "src": "^/zh/.*",
+      "dest": "/zh/index.html"
+    },
+    {
+      "src": "^/ja/?$",
+      "dest": "/ja/index.html"
+    },
+    {
+      "src": "^/ja/.*",
+      "dest": "/ja/index.html"
+    },
+    {
+      "src": "^/en/?.*",
+      "dest": "/index.html"
+    }
+  ]
+} 

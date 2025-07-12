@@ -15,8 +15,10 @@
     <meta property="og:url" content="https://yourdomain.com/zh/">
     <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
     <!-- 语言切换相关标签 -->
-    <link rel="alternate" hreflang="zh-CN" href="index.html">
+    <link rel="alternate" hreflang="zh" href="index.html">
     <link rel="alternate" hreflang="ja" href="../ja/index.html">
+    <link rel="alternate" hreflang="en" href="../index.html">
+    <link rel="alternate" hreflang="x-default" href="../index.html">
 </head>
 <body>
     <header>
@@ -35,8 +37,8 @@
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
                     <option value="../index.html">English</option>
-                    <option value="index.html" selected>中文 (Chinese)</option>
-                    <option value="../ja/index.html">日本語 (Japanese)</option>
+                    <option value="index.html" selected>中文</option>
+                    <option value="../ja/index.html">日本語</option>
                 </select>
             </div>
         </div>
@@ -428,8 +430,8 @@
             // 设置cookie，有效期30天
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
-            // 直接调用redirectToLanguage函数
-            redirectToLanguage(langCode);
+            // 直接跳转到选择的页面
+            window.location.href = selectedValue;
         }
         
         // 初始化
@@ -486,11 +488,10 @@
                 });
             });
             
-            // 检查是否需要自动检测语言
-            // 如果URL中有noautodetect参数，跳过自动检测
-            if (!checkUrlParams()) {
-                detectBrowserLanguage();
-            }
+            // 移除自动语言检测
+            // if (!checkUrlParams()) {
+            //     detectBrowserLanguage();
+            // }
         };
     </script>
 </body>
