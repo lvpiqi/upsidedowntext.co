@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upside Down Text Generator | Flip Text Online</title>
+    <meta name="description" content="Free online upside down text generator. Create flipped text, reversed text, and mirror text effects for social media, chat, and creative designs.">
+    <meta name="keywords" content="upside down text,flip text,text generator,text effects,reverse text,mirror text">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Open Graph tags for social media sharing -->
+    <meta property="og:title" content="Upside Down Text Generator">
+    <meta property="og:description" content="Free online tool to create flipped text, reversed text, and mirror text effects.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
+    <!-- Language alternates -->
+    <link rel="alternate" hreflang="zh-CN" href="zh/index.html">
+    <link rel="alternate" hreflang="ja" href="ja/index.html">
+    <link rel="alternate" hreflang="en" href="index.html">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Upside Down Text</h1>
+            <p class="tagline">Flip Your Text Upside Down</p>
+            <nav>
+                <ul>
+                    <li><a href="#main">Tool</a></li>
+                    <li><a href="#guide">Guide</a></li>
+                    <li><a href="#characters">Characters</a></li>
+                    <li><a href="#uses">Uses</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+            <div class="language-switcher">
+                <select id="language-select" onchange="changeLanguage()">
+                    <option value="index.html" selected>English</option>
+                    <option value="zh/index.html">中文 (Chinese)</option>
+                    <option value="ja/index.html">日本語 (Japanese)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main id="main" class="container">
+        <section class="converter">
+            <div class="input-area">
+                <label for="input-text">Enter text:</label>
+                <textarea id="input-text" placeholder="Type or paste your text here..." autofocus></textarea>
+                <div class="char-counter">
+                    <span id="char-count">0</span> characters
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <button id="flip-btn" class="primary-btn">Flip Upside Down</button>
+                    <button id="reverse-btn">Reverse Text</button>
+                    <button id="mirror-btn">Mirror Effect</button>
+                    <button id="flip-reverse-btn">Flip & Reverse</button>
+                    <button id="clear-btn">Clear</button>
+                </div>
+                <div class="control-group">
+                    <button id="copy-btn">Copy Result</button>
+                    <div class="social-share">
+                        <span>Share:</span>
+                        <a href="#" id="share-weixin" title="Share on WeChat"><span class="icon-wechat"></span></a>
+                        <a href="#" id="share-weibo" title="Share on Weibo"><span class="icon-weibo"></span></a>
+                        <a href="#" id="share-qq" title="Share on QQ"><span class="icon-qq"></span></a>
+                        <a href="#" id="share-twitter" title="Share on Twitter"><span class="icon-twitter"></span></a>
+                        <a href="#" id="share-facebook" title="Share on Facebook"><span class="icon-facebook"></span></a>
+                        <a href="#" id="share-youtube" title="Share on YouTube"><span class="icon-youtube"></span></a>
+                        <a href="#" id="share-instagram" title="Share on Instagram"><span class="icon-instagram"></span></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-area">
+                <label for="output-text">Result:</label>
+                <div id="output-text" class="output-box"></div>
+                <div class="copy-success" id="copy-msg">Copied to clipboard!</div>
+            </div>
+
+            <div class="output-options">
+                <div class="option">
+                    <input type="checkbox" id="show-html" class="checkbox">
+                    <label for="show-html">Show HTML Unicode</label>
+                </div>
+                <div id="html-output" class="html-code hidden">
+                    <code id="html-code"></code>
+                    <button id="copy-html-btn" class="small-btn">Copy HTML</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section id="guide" class="container section">
+        <h2>How to Use the Upside Down Text Generator</h2>
+        <div class="step-guide">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Enter Text</h3>
+                    <p>Type or paste the text you want to transform</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Choose Style</h3>
+                    <p>Click one of the transformation buttons: Flip, Reverse, Mirror, or combined effects</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Copy Result</h3>
+                    <p>Click "Copy Result" to copy the transformed text to your clipboard</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Use Text</h3>
+                    <p>Paste it into social media, chat apps, or creative designs</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="characters" class="container section">
+        <h2>Character Reference</h2>
+        <p>See how each character is transformed when flipped upside down</p>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="uppercase">Uppercase</button>
+            <button class="tab-btn" data-tab="lowercase">Lowercase</button>
+            <button class="tab-btn" data-tab="numbers">Numbers</button>
+            <button class="tab-btn" data-tab="symbols">Symbols</button>
+        </div>
+        
+        <div id="uppercase" class="tab-content active">
+            <div class="char-table">
+                <!-- Uppercase character table will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+        
+        <div id="lowercase" class="tab-content">
+            <div class="char-table">
+                <!-- Lowercase character table will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+        
+        <div id="numbers" class="tab-content">
+            <div class="char-table">
+                <!-- Numbers table will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+        
+        <div id="symbols" class="tab-content">
+            <div class="char-table">
+                <!-- Symbols table will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <section id="uses" class="container section">
+        <h2>Creative Uses for Upside Down Text</h2>
+        
+        <div class="uses-grid">
+            <div class="use-card">
+                <div class="use-icon social-icon"></div>
+                <h3>Social Media</h3>
+                <p>Make your social media posts stand out and attract more engagement</p>
+            </div>
+            
+            <div class="use-card">
+                <div class="use-icon chat-icon"></div>
+                <h3>Fun Conversations</h3>
+                <p>Add creativity and fun to your chats with upside-down messages</p>
+            </div>
+            
+            <div class="use-card">
+                <div class="use-icon design-icon"></div>
+                <h3>Creative Design</h3>
+                <p>Use flipped text in graphic design, posters, business cards, and other creative works</p>
+            </div>
+            
+            <div class="use-card">
+                <div class="use-icon security-icon"></div>
+                <h3>Simple Encryption</h3>
+                <p>Use as a simple way to obscure your message content</p>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h3>Preview Examples</h3>
+            <p>See how upside down text looks on different platforms</p>
+            
+            <div class="preview-platforms">
+                <div class="platform">
+                    <div class="platform-header weixin-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">WeChat</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="message">
+                            <div class="message-bubble">Hello, how are you today?</div>
+                        </div>
+                        <div class="message reply">
+                            <div class="message-bubble">˙¿ʎɐpoʇ noʎ ǝɹɐ ʍoɥ 'ollǝɥ</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="platform">
+                    <div class="platform-header weibo-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">Weibo</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">CreativeUser</span>
+                            </div>
+                            <div class="post-content">
+                                Just learned how to make upside down text:
+                                <br>
+                                ¡ƃuᴉzɐɯɐ sᴉ ʇxǝʇ uʍop ǝpᴉsdn
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header facebook-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">Facebook</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">Creative Writer</span>
+                            </div>
+                            <div class="post-content">
+                                Just discovered this cool upside down text generator!
+                                <br>
+                                ¡ǝɯosǝʍɐ os sᴉ sᴉɥʇ
+                                <br>
+                                #UpsideDownText #CreativeTyping
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header twitter-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">Twitter</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">@TextArtist</span>
+                            </div>
+                            <div class="post-content">
+                                ʇxǝʇ uʍop ǝpᴉsdn ɥʇᴉʍ sʇǝǝʍʇ ɹnoʎ ǝzᴉɯoʇsnɔ oʇ ʍoɥ pǝuɹɐǝl ʇsnſ
+                                <br>
+                                #CreativeText #TypographyArt
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header instagram-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">Instagram</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">creative_typography</span>
+                            </div>
+                            <div class="post-content">
+                                ✨ Make your bio stand out with upside down text ✨
+                                <br>
+                                ˙ʎɐpoʇ ʇᴉ ʎɹʇ ¡sʇuǝɯɯoɔ puɐ soᴉq ɹnoʎ ɹoɟ ʇɔǝɟɹǝԀ
+                                <br>
+                                #CreativeDesign #TextArt #TypographyArt
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header tiktok-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">TikTok</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">@TextEffectsPro</span>
+                            </div>
+                            <div class="post-content">
+                                How to get more followers with upside down text 👇
+                                <br>
+                                ¡ʞoʇʞᴉʇ uo lɐɹᴉʌ oƃ oʇ ʍoɥ
+                                <br>
+                                #TipsTricks #TextEffects #AttentionGrabber
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="container section">
+        <h2>About This Site</h2>
+        <p>Upside Down Text is a free online text conversion tool dedicated to providing high-quality text effect transformations. Our goal is to create a clean, easy-to-use, and powerful platform that helps users create fun text effects effortlessly.</p>
+        
+        <p>Compared to similar tools, our advantages include:</p>
+        <ul>
+            <li>Clean, ad-free user interface</li>
+            <li>Multiple text transformation effects: flip, reverse, mirror, and more</li>
+            <li>Completely free with no registration required</li>
+            <li>Mobile and desktop friendly</li>
+            <li>HTML Unicode code provided for web developers</li>
+        </ul>
+        
+        <p>If you have any suggestions or questions, please contact us at: <a href="mailto:contact@yourdomain.com">contact@yourdomain.com</a></p>
+    </section>
+
+    <section class="container section css-section">
+        <h2>Using Upside Down Text on Websites</h2>
+        <p>You can create upside down text effects on your own website using CSS:</p>
+        
+        <div class="code-example">
+            <h3>Upside Down Effect</h3>
+            <pre><code class="language-css">.upside-down {
+  display: inline-block;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <h3>Horizontal Mirror Effect</h3>
+            <pre><code class="language-css">.horizontal-mirror {
+  display: inline-block;
+  transform: scaleX(-1);
+}</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <h3>Vertical Mirror Effect</h3>
+            <pre><code class="language-css">.vertical-mirror {
+  display: inline-block;
+  transform: scaleY(-1);
+  white-space: nowrap;
+}</code></pre>
+        </div>
+
+        <div class="code-example">
+            <h3>HTML Example</h3>
+            <pre><code class="language-html">&lt;span class="upside-down"&gt;Flipped text&lt;/span&gt;</code></pre>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Upside Down Text</h2>
+                    <p>Flip Your Text Upside Down</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="#main">Tool</a></li>
+                        <li><a href="#guide">Guide</a></li>
+                        <li><a href="#characters">Characters</a></li>
+                        <li><a href="#uses">Uses</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Related Tools</h3>
+                    <ul>
+                        <li><a href="#">Coming Soon</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year">2023</span> Upside Down Text. All rights reserved.</p>
+                <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Use</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Language switching function
+        function changeLanguage() {
+            const select = document.getElementById('language-select');
+            const selectedValue = select.value;
+            
+            // Save the selected language in a cookie
+            let langCode = '';
+            if (selectedValue.includes('/zh/')) {
+                langCode = 'zh';
+            } else if (selectedValue.includes('/ja/')) {
+                langCode = 'ja';
+            } else {
+                langCode = 'en';
+            }
+            
+            if (langCode) {
+                // Set cookie to remember user's language preference for 30 days
+                const date = new Date();
+                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+                const expires = "expires=" + date.toUTCString();
+                document.cookie = "selected_language=" + langCode + ";" + expires + ";path=/";
+            }
+            
+            // Navigate to the selected language page
+            window.location.href = selectedValue;
+        }
+    </script>
+</body>
+</html> 

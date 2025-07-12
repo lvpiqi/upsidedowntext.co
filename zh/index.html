@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upside Down Text - 上下颠倒文字转换器 | 文字翻转工具</title>
+    <meta name="description" content="免费在线上下颠倒文字转换器，支持文字翻转、反向排列、镜像效果。轻松创建有趣的颠倒文字，适用于社交媒体、聊天、创意设计。">
+    <meta name="keywords" content="上下颠倒文字,文字翻转,颠倒文字生成器,upside down text,文字特效,文字镜像">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <!-- Open Graph 标签用于社交媒体分享 -->
+    <meta property="og:title" content="Upside Down Text - 上下颠倒文字转换器">
+    <meta property="og:description" content="免费在线上下颠倒文字转换器，支持文字翻转、反向排列、镜像效果。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/zh/">
+    <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
+    <!-- 语言切换相关标签 -->
+    <link rel="alternate" hreflang="zh-CN" href="index.html">
+    <link rel="alternate" hreflang="ja" href="../ja/index.html">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Upside Down Text</h1>
+            <p class="tagline">上下颠倒文字转换器</p>
+            <nav>
+                <ul>
+                    <li><a href="#main">工具</a></li>
+                    <li><a href="#guide">使用指南</a></li>
+                    <li><a href="#characters">字符表</a></li>
+                    <li><a href="#uses">创意用途</a></li>
+                    <li><a href="#about">关于</a></li>
+                </ul>
+            </nav>
+            <div class="language-switcher">
+                <select id="language-select" onchange="changeLanguage()">
+                    <option value="../index.html">English</option>
+                    <option value="index.html" selected>中文 (Chinese)</option>
+                    <option value="../ja/index.html">日本語 (Japanese)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main id="main" class="container">
+        <section class="converter">
+            <div class="input-area">
+                <label for="input-text">输入文字:</label>
+                <textarea id="input-text" placeholder="在这里输入你想要转换的文字..." autofocus></textarea>
+                <div class="char-counter">
+                    <span id="char-count">0</span> 个字符
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <button id="flip-btn" class="primary-btn">上下颠倒</button>
+                    <button id="reverse-btn">文字反向</button>
+                    <button id="mirror-btn">镜像效果</button>
+                    <button id="flip-reverse-btn">颠倒并反向</button>
+                    <button id="clear-btn">清空</button>
+                </div>
+                <div class="control-group">
+                    <button id="copy-btn">复制结果</button>
+                    <div class="social-share">
+                        <span>分享到:</span>
+                        <a href="#" id="share-weixin" title="分享到微信"><span class="icon-wechat"></span></a>
+                        <a href="#" id="share-weibo" title="分享到微博"><span class="icon-weibo"></span></a>
+                        <a href="#" id="share-qq" title="分享到QQ"><span class="icon-qq"></span></a>
+                        <a href="#" id="share-twitter" title="分享到推特"><span class="icon-twitter"></span></a>
+                        <a href="#" id="share-facebook" title="分享到Facebook"><span class="icon-facebook"></span></a>
+                        <a href="#" id="share-youtube" title="分享到YouTube"><span class="icon-youtube"></span></a>
+                        <a href="#" id="share-instagram" title="分享到Instagram"><span class="icon-instagram"></span></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-area">
+                <label for="output-text">转换结果:</label>
+                <div id="output-text" class="output-box"></div>
+                <div class="copy-success" id="copy-msg">已复制到剪贴板！</div>
+            </div>
+
+            <div class="output-options">
+                <div class="option">
+                    <input type="checkbox" id="show-html" class="checkbox">
+                    <label for="show-html">显示HTML Unicode</label>
+                </div>
+                <div id="html-output" class="html-code hidden">
+                    <code id="html-code"></code>
+                    <button id="copy-html-btn" class="small-btn">复制HTML</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section id="guide" class="container section">
+        <h2>如何使用上下颠倒文字转换器</h2>
+        <div class="step-guide">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>输入文字</h3>
+                    <p>在文本框中输入您想要转换的文字</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>选择样式</h3>
+                    <p>点击需要的转换按钮：上下颠倒、文字反向、镜像效果或组合效果</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>复制结果</h3>
+                    <p>点击"复制结果"按钮将转换后的文字复制到剪贴板</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>使用文字</h3>
+                    <p>粘贴到社交媒体、聊天工具、设计作品中</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="characters" class="container section">
+        <h2>字符对照表</h2>
+        <p>了解每个字母如何被转换成上下颠倒的效果</p>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="uppercase">大写字母</button>
+            <button class="tab-btn" data-tab="lowercase">小写字母</button>
+            <button class="tab-btn" data-tab="numbers">数字</button>
+            <button class="tab-btn" data-tab="symbols">符号</button>
+        </div>
+        
+        <div id="uppercase" class="tab-content active">
+            <div class="char-table">
+                <!-- 大写字母表会通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div id="lowercase" class="tab-content">
+            <div class="char-table">
+                <!-- 小写字母表会通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div id="numbers" class="tab-content">
+            <div class="char-table">
+                <!-- 数字表会通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div id="symbols" class="tab-content">
+            <div class="char-table">
+                <!-- 符号表会通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <section id="uses" class="container section">
+        <h2>上下颠倒文字的创意用途</h2>
+        
+        <div class="uses-grid">
+            <div class="use-card">
+                <div class="use-icon social-icon"></div>
+                <h3>社交媒体</h3>
+                <p>让你的社交媒体帖子脱颖而出，吸引更多关注和互动</p>
+            </div>
+            
+            <div class="use-card">
+                <div class="use-icon chat-icon"></div>
+                <h3>趣味聊天</h3>
+                <p>在聊天中使用颠倒文字，增添对话乐趣和创意</p>
+            </div>
+            
+            <div class="use-card">
+                <div class="use-icon design-icon"></div>
+                <h3>创意设计</h3>
+                <p>在平面设计、海报、名片等创意作品中使用颠倒文字</p>
+            </div>
+            
+            <div class="use-card">
+                <div class="use-icon security-icon"></div>
+                <h3>简单加密</h3>
+                <p>作为一种简单的文字加密方式，隐藏信息内容</p>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h3>效果预览</h3>
+            <p>在不同平台上的颠倒文字效果</p>
+            
+            <div class="preview-platforms">
+                <div class="platform">
+                    <div class="platform-header weixin-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">微信</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="message">
+                            <div class="message-bubble">你好，今天过得怎么样？</div>
+                        </div>
+                        <div class="message reply">
+                            <div class="message-bubble">˙¿ʎɐpoʇ noʎ ǝɹɐ ʍoɥ 'ollǝɥ</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="platform">
+                    <div class="platform-header weibo-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">微博</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">创意达人</span>
+                            </div>
+                            <div class="post-content">
+                                今天学会了上下颠倒文字：
+                                <br>
+                                ¡ƃuᴉzɐɯɐ sᴉ ʇxǝʇ uʍop ǝpᴉsdn
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header facebook-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">Facebook</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">Creative Writer</span>
+                            </div>
+                            <div class="post-content">
+                                Just discovered this cool upside down text generator!
+                                <br>
+                                ¡ǝɯosǝʍɐ os sᴉ sᴉɥʇ
+                                <br>
+                                #UpsideDownText #CreativeTyping
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header twitter-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">推特</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">@TextArtist</span>
+                            </div>
+                            <div class="post-content">
+                                ʇxǝʇ uʍop ǝpᴉsdn ɥʇᴉʍ sʇǝǝʍʇ ɹnoʎ ǝzᴉɯoʇsnɔ oʇ ʍoɥ pǝuɹɐǝl ʇsnſ
+                                <br>
+                                #创意文字 #字体艺术
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header instagram-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">Instagram</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">creative_typography</span>
+                            </div>
+                            <div class="post-content">
+                                ✨ 用上下颠倒文字让你的个人简介与众不同 ✨
+                                <br>
+                                ˙ʎɐpoʇ ʇᴉ ʎɹʇ ¡sʇuǝɯɯoɔ puɐ soᴉq ɹnoʎ ɹoɟ ʇɔǝɟɹǝԀ
+                                <br>
+                                #创意设计 #文字艺术 #TypographyArt
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform">
+                    <div class="platform-header tiktok-header">
+                        <span class="platform-icon"></span>
+                        <span class="platform-name">TikTok</span>
+                    </div>
+                    <div class="platform-content">
+                        <div class="post">
+                            <div class="post-header">
+                                <span class="avatar"></span>
+                                <span class="username">@文字特效达人</span>
+                            </div>
+                            <div class="post-content">
+                                教你如何用颠倒文字吸引更多粉丝 👇
+                                <br>
+                                ¡ʞoʇʞᴉʇ uo lɐɹᴉʌ oƃ oʇ ʍoɥ
+                                <br>
+                                #小技巧 #文字特效 #吸引眼球
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="container section">
+        <h2>关于本站</h2>
+        <p>Upside Down Text 是一个免费的在线文字转换工具，专注于提供高质量的文字特效转换服务。我们的目标是创建一个简洁、易用且功能强大的平台，帮助用户轻松创建有趣的文字效果。</p>
+        
+        <p>与其他类似工具相比，我们的优势在于：</p>
+        <ul>
+            <li>干净简洁的用户界面，无烦人广告</li>
+            <li>多种文字转换效果：上下颠倒、反向排列、镜像效果等</li>
+            <li>完全免费，无需注册</li>
+            <li>适配移动设备和桌面设备</li>
+            <li>提供HTML Unicode代码，方便网页开发者使用</li>
+        </ul>
+        
+        <p>如果您有任何建议或问题，欢迎联系我们：<a href="mailto:contact@yourdomain.com">contact@yourdomain.com</a></p>
+    </section>
+
+    <section class="container section css-section">
+        <h2>在网站中使用颠倒文字</h2>
+        <p>您可以使用CSS在自己的网站中创建颠倒文字效果：</p>
+        
+        <div class="code-example">
+            <h3>上下颠倒效果</h3>
+            <pre><code class="language-css">.upside-down {
+  display: inline-block;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <h3>水平镜像效果</h3>
+            <pre><code class="language-css">.horizontal-mirror {
+  display: inline-block;
+  transform: scaleX(-1);
+}</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <h3>垂直镜像效果</h3>
+            <pre><code class="language-css">.vertical-mirror {
+  display: inline-block;
+  transform: scaleY(-1);
+  white-space: nowrap;
+}</code></pre>
+        </div>
+
+        <div class="code-example">
+            <h3>HTML 示例</h3>
+            <pre><code class="language-html">&lt;span class="upside-down"&gt;颠倒的文字&lt;/span&gt;</code></pre>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Upside Down Text</h2>
+                    <p>上下颠倒文字转换器</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>导航</h3>
+                    <ul>
+                        <li><a href="#main">工具</a></li>
+                        <li><a href="#guide">使用指南</a></li>
+                        <li><a href="#characters">字符表</a></li>
+                        <li><a href="#uses">创意用途</a></li>
+                        <li><a href="#about">关于</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>相关工具</h3>
+                    <ul>
+                        <li><a href="#">暂无</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year">2023</span> Upside Down Text. 保留所有权利。</p>
+                <p><a href="../privacy.html">隐私政策</a> | <a href="../terms.html">使用条款</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script>
+        // 语言切换函数
+        function changeLanguage() {
+            const select = document.getElementById('language-select');
+            const selectedValue = select.value;
+            
+            // 将所选语言保存到cookie中
+            let langCode = '';
+            if (selectedValue.includes('/ja/')) {
+                langCode = 'ja';
+            } else if (selectedValue.includes('../index.html')) {
+                langCode = 'en';
+            } else {
+                langCode = 'zh';
+            }
+            
+            if (langCode) {
+                // 设置cookie记住用户的语言偏好，有效期30天
+                const date = new Date();
+                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+                const expires = "expires=" + date.toUTCString();
+                document.cookie = "selected_language=" + langCode + ";" + expires + ";path=/";
+            }
+            
+            // 导航到所选语言页面
+            window.location.href = selectedValue;
+        }
+    </script>
+</body>
+</html> 
