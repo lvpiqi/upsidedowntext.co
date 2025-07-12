@@ -347,28 +347,5 @@
     </footer>
 
     <script src="../script.js"></script>
-    <script>
-        // 言語切り替え機能
-        function changeLanguage() {
-            const select = document.getElementById('language-select');
-            const selectedValue = select.value;
-            
-            // 選択された値に基づいて言語コードを決定
-            let langCode = '';
-            if (selectedValue.includes('/zh/')) {
-                langCode = 'zh';
-            } else if (selectedValue.includes('/index.html')) {
-                langCode = 'en';
-            } else {
-                langCode = 'ja';
-            }
-            
-            // Cookieを設定、有効期限は30日間
-            document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
-            
-            // 直接選択されたページに移動
-            window.location.href = selectedValue;
-        }
-    </script>
 </body>
 </html> 

@@ -411,28 +411,5 @@
     </footer>
 
     <script src="../script.js"></script>
-    <script>
-        // 语言切换函数
-        function changeLanguage() {
-            const select = document.getElementById('language-select');
-            const selectedValue = select.value;
-            
-            // 根据选择的值确定语言代码
-            let langCode = '';
-            if (selectedValue.includes('/ja/')) {
-                langCode = 'ja';
-            } else if (selectedValue.includes('/index.html')) {
-                langCode = 'en';
-            } else {
-                langCode = 'zh';
-            }
-            
-            // 设置cookie，有效期30天
-            document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
-            
-            // 直接跳转到选择的页面
-            window.location.href = selectedValue;
-        }
-    </script>
 </body>
 </html> 

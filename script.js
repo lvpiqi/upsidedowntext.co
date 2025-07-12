@@ -102,6 +102,13 @@ function detectBrowserLanguage() {
         return;
     }
     
+    // 检查当前URL是否有意图阻止自动重定向
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('noautodetect')) {
+        debugLog('URL包含noautodetect参数，跳过自动检测');
+        return;
+    }
+    
     // 获取浏览器语言
     let browserLang = navigator.language || navigator.userLanguage;
     browserLang = browserLang.toLowerCase();
@@ -186,18 +193,14 @@ function redirectToLanguage(lang) {
             break;
     }
     
-    // 添加查询参数
-    // 添加noautodetect参数防止循环自动检测，但它会在页面加载后通过cleanURLParameters函数自动移除
-    targetUrl += '?noautodetect=1';
-    
-    // 添加其他查询字符串参数（排除noautodetect）
+    // 保留除noautodetect外的所有现有查询参数
     if (queryString) {
         const urlParams = new URLSearchParams(queryString);
-        urlParams.delete('noautodetect'); // 移除可能已存在的noautodetect
+        urlParams.delete('noautodetect'); // 删除noautodetect参数
         
         const remainingParams = urlParams.toString();
         if (remainingParams) {
-            targetUrl += '&' + remainingParams;
+            targetUrl += '?' + remainingParams;
         }
     }
     
@@ -612,10 +615,6 @@ function changeLanguage() {
     const langSelect = document.getElementById('language-select');
     const selectedPath = langSelect.value;
     
-    // 设置重定向标记并执行重定向
-    redirectInProgress = true;
-    window.location.href = selectedPath;
-    
     // 记住用户选择
     let langCode = 'en';
     if (selectedPath === '/zh/') {
@@ -626,6 +625,11 @@ function changeLanguage() {
     
     // 设置语言cookie
     setCookie("selected_language", langCode, 30);
+    manualLanguageSelected = true;
+    
+    // 设置重定向标记并执行重定向
+    redirectInProgress = true;
+    window.location.href = selectedPath;
 } 
 
 // 添加一个函数，用于清理URL中的noautodetect参数
