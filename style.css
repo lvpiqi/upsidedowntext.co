@@ -323,10 +323,16 @@ button:active {
 
 .social-share a:hover {
     background-color: var(--primary-color);
-    color: white;
+    transform: scale(1.1);
 }
 
-/* 社交媒体图标的品牌色 */
+.share-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* 社交媒体图标的品牌色 - 保留兼容旧版 */
 #share-weixin:hover {
     background-color: #07C160;
 }
