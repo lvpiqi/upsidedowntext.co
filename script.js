@@ -98,11 +98,19 @@ function redirectToLanguage(lang) {
     debugLog('Manual language selection flag set in redirectToLanguage');
     
     const currentPath = window.location.pathname;
-    const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
+    debugLog('Current path:', currentPath);
+    
+    // 检查是否在根目录或语言子目录
+    const isInZh = currentPath.includes('/zh/');
+    const isInJa = currentPath.includes('/ja/');
+    const isInRoot = !isInZh && !isInJa;
     
     // 获取当前页面的文件名（如果没有则默认为index.html）
     let currentFile = 'index.html';
-    const pathParts = currentPath.split('/');
+    const pathParts = currentPath.split('/').filter(part => part.length > 0);
+    debugLog('Path parts:', pathParts);
+    
+    // 如果路径不为空，检查最后一个部分是否是文件名
     if (pathParts.length > 0) {
         const lastPart = pathParts[pathParts.length - 1];
         if (lastPart && lastPart.includes('.html')) {
@@ -112,24 +120,33 @@ function redirectToLanguage(lang) {
     
     debugLog('Current file detected:', currentFile);
     
+    // 构建重定向路径
     let redirectPath = '';
     
+    // 根据目标语言和当前位置构建路径
     if (lang === 'zh') {
-        redirectPath = isInRoot ? 'zh/' + currentFile : '../zh/' + currentFile;
+        redirectPath = isInRoot ? 'zh/' + currentFile : 
+                       isInJa ? '../zh/' + currentFile : currentFile;
     } else if (lang === 'ja') {
-        redirectPath = isInRoot ? 'ja/' + currentFile : '../ja/' + currentFile;
+        redirectPath = isInRoot ? 'ja/' + currentFile : 
+                       isInZh ? '../ja/' + currentFile : currentFile;
     } else if (lang === 'en') {
         redirectPath = isInRoot ? currentFile : '../' + currentFile;
     }
     
-    // 检查文件是否存在，如果不存在则使用index.html
-    // 由于无法直接检查文件是否存在，这里我们假设所有语言版本都有相同的文件结构
+    // 如果在zh目录中选择zh语言，或在ja目录中选择ja语言，不需要重定向
+    if ((isInZh && lang === 'zh') || (isInJa && lang === 'ja') || (isInRoot && lang === 'en')) {
+        debugLog('Already in the correct language directory, no redirect needed');
+        return;
+    }
     
     if (redirectPath) {
         debugLog('Redirecting to:', redirectPath);
         redirectPath += '?noredirect=1';
         redirectInProgress = true;
         window.location.href = redirectPath;
+    } else {
+        debugLog('No redirect path determined, staying on current page');
     }
 }
 
