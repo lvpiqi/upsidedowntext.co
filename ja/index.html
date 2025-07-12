@@ -351,33 +351,26 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // 選択された言語をCookieに保存
+            // 選択された言語をURLパラメータに保存
             let langCode = '';
+            let targetUrl = '';
+            
             if (selectedValue.includes('../zh/')) {
                 langCode = 'zh';
+                targetUrl = '../zh/index.html?lang=zh';
             } else if (selectedValue.includes('../index.html')) {
                 langCode = 'en';
+                targetUrl = '../index.html?lang=en';
             } else {
                 langCode = 'ja';
+                targetUrl = 'index.html?lang=ja';
             }
             
-            console.log('言語Cookieを設定:', langCode);
+            console.log('言語設定:', langCode);
+            console.log('リダイレクト先:', targetUrl);
             
-            if (langCode) {
-                // ユーザーの言語設定を30日間記憶するCookieを設定
-                const date = new Date();
-                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-                const expires = "expires=" + date.toUTCString();
-                document.cookie = "selected_language=" + langCode + ";" + expires + ";path=/";
-                
-                // Cookie機能を確認するためのテストCookieも設定
-                document.cookie = "test_cookie=works;" + expires + ";path=/";
-                
-                console.log('Cookie設定完了、現在のCookies:', document.cookie);
-            }
-            
-            // 選択された言語ページに移動
-            window.location.href = selectedValue;
+            // 言語パラメータ付きで選択された言語ページに移動
+            window.location.href = targetUrl;
         }
     </script>
 </body>

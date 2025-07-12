@@ -415,33 +415,26 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // 将所选语言保存到cookie中
+            // 将所选语言保存到URL参数中
             let langCode = '';
+            let targetUrl = '';
+            
             if (selectedValue.includes('/ja/')) {
                 langCode = 'ja';
+                targetUrl = '../ja/index.html?lang=ja';
             } else if (selectedValue.includes('../index.html')) {
                 langCode = 'en';
+                targetUrl = '../index.html?lang=en';
             } else {
                 langCode = 'zh';
+                targetUrl = 'index.html?lang=zh';
             }
             
-            console.log('设置语言cookie为:', langCode);
+            console.log('设置语言为:', langCode);
+            console.log('跳转到:', targetUrl);
             
-            if (langCode) {
-                // 设置cookie记住用户的语言偏好，有效期30天
-                const date = new Date();
-                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-                const expires = "expires=" + date.toUTCString();
-                document.cookie = "selected_language=" + langCode + ";" + expires + ";path=/";
-                
-                // 同时设置一个测试cookie以验证cookie功能
-                document.cookie = "test_cookie=works;" + expires + ";path=/";
-                
-                console.log('Cookie已设置，当前cookies:', document.cookie);
-            }
-            
-            // 导航到所选语言页面
-            window.location.href = selectedValue;
+            // 导航到所选语言页面，带语言参数
+            window.location.href = targetUrl;
         }
     </script>
 </body>

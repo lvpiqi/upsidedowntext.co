@@ -100,6 +100,46 @@ document.addEventListener('DOMContentLoaded', () => {
  * Detect user browser language and redirect to appropriate language version
  */
 function detectUserLanguage() {
+    // 调试信息：打印完整的当前URL
+    console.log('Current URL:', window.location.href);
+    console.log('Current pathname:', window.location.pathname);
+    
+    // 检查是否有语言切换请求参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const langParam = urlParams.get('lang');
+    if (langParam) {
+        console.log('Language parameter found in URL:', langParam);
+        // 设置cookie并重定向到相应语言版本（不带参数）
+        setCookie('selected_language', langParam, 30);
+        
+        // 构建不带参数的URL
+        let newUrl = window.location.pathname;
+        
+        // 根据选择的语言和当前路径确定重定向目标
+        const currentPath = window.location.pathname;
+        const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
+        const isInZh = currentPath.includes('/zh/');
+        const isInJa = currentPath.includes('/ja/');
+        
+        if (langParam === 'zh') {
+            if (!isInZh) { // 不在中文目录
+                newUrl = isInRoot ? 'zh/index.html' : '../zh/index.html';
+            }
+        } else if (langParam === 'ja') {
+            if (!isInJa) { // 不在日语目录
+                newUrl = isInRoot ? 'ja/index.html' : '../ja/index.html';
+            }
+        } else if (langParam === 'en') {
+            if (!isInRoot) { // 不在根目录（英文）
+                newUrl = '../index.html';
+            }
+        }
+        
+        console.log('Redirecting to (from URL param):', newUrl);
+        window.location.href = newUrl;
+        return;
+    }
+    
     // If language has been manually selected, redirect to that language
     const selectedLang = getCookie('selected_language');
     console.log('Selected language from cookie:', selectedLang);
@@ -113,6 +153,8 @@ function detectUserLanguage() {
         const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
         const isInZh = currentPath.includes('/zh/');
         const isInJa = currentPath.includes('/ja/');
+        
+        console.log('Path analysis:', { isInRoot, isInZh, isInJa });
         
         let shouldRedirect = false;
         let redirectPath = '';
@@ -136,6 +178,8 @@ function detectUserLanguage() {
         
         if (shouldRedirect) {
             console.log('Redirecting to:', redirectPath);
+            // 添加一个随机参数防止缓存问题
+            redirectPath += '?nocache=' + new Date().getTime();
             window.location.href = redirectPath;
         } else {
             console.log('No redirect needed, already in correct language section');
@@ -154,6 +198,7 @@ function detectUserLanguage() {
     // If not in a language subdirectory, no need to redirect (already in English/default)
     if (!currentPath.includes('/zh/') && !currentPath.includes('/ja/')) {
         // Already in English version (root directory)
+        console.log('Already in English version, no redirect needed');
         return;
     }
     
@@ -161,15 +206,18 @@ function detectUserLanguage() {
     if (userLang.startsWith('zh')) {
         // If browser language is Chinese and not in Chinese directory
         if (!currentPath.includes('/zh/')) {
+            console.log('Browser language is Chinese, redirecting to Chinese version');
             window.location.href = '../zh/index.html';
         }
     } else if (userLang.startsWith('ja')) {
         // If browser language is Japanese and not in Japanese directory
         if (!currentPath.includes('/ja/')) {
+            console.log('Browser language is Japanese, redirecting to Japanese version');
             window.location.href = '../ja/index.html';
         }
     } else {
         // Default to English for other languages
+        console.log('Browser language is not Chinese or Japanese, redirecting to English version');
         window.location.href = '../index.html';
     }
 }
