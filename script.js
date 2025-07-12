@@ -159,7 +159,7 @@ function detectUserLanguage() {
         return;
     }
     
-    // If language has been manually selected, redirect to that language
+    // 如果用户手动选择了语言，优先使用用户的选择
     const selectedLang = getCookie('selected_language');
     console.log('Selected language from cookie:', selectedLang);
     
@@ -208,9 +208,69 @@ function detectUserLanguage() {
         return;
     }
     
-    // 如果没有选择语言，则不进行自动重定向
-    console.log('No language selection found, skipping auto-redirect');
-    return;
+    // 如果用户没有手动选择语言，则根据浏览器语言自动选择
+    // 获取浏览器语言
+    const userLang = navigator.language || navigator.userLanguage;
+    console.log('Browser language:', userLang);
+    
+    // 当前页面URL路径
+    const currentPath = window.location.pathname;
+    
+    // 如果不在语言子目录中，根据浏览器语言自动重定向
+    if (!currentPath.includes('/zh/') && !currentPath.includes('/ja/')) {
+        // 如果浏览器语言是中文
+        if (userLang.startsWith('zh')) {
+            console.log('Browser language is Chinese, redirecting to Chinese version');
+            redirectInProgress = true;
+            window.location.href = 'zh/index.html?noredirect=1';
+            return;
+        }
+        // 如果浏览器语言是日语
+        else if (userLang.startsWith('ja')) {
+            console.log('Browser language is Japanese, redirecting to Japanese version');
+            redirectInProgress = true;
+            window.location.href = 'ja/index.html?noredirect=1';
+            return;
+        }
+        // 其他语言保持在英文版
+        console.log('Browser language is not Chinese or Japanese, staying on English version');
+    }
+    // 如果在中文子目录，但浏览器语言不是中文
+    else if (currentPath.includes('/zh/') && !userLang.startsWith('zh')) {
+        // 如果浏览器语言是日语
+        if (userLang.startsWith('ja')) {
+            console.log('In Chinese directory but browser language is Japanese, redirecting to Japanese version');
+            redirectInProgress = true;
+            window.location.href = '../ja/index.html?noredirect=1';
+            return;
+        }
+        // 其他非中文语言，重定向到英文版
+        else if (!userLang.startsWith('zh')) {
+            console.log('In Chinese directory but browser language is not Chinese, redirecting to English version');
+            redirectInProgress = true;
+            window.location.href = '../index.html?noredirect=1';
+            return;
+        }
+    }
+    // 如果在日语子目录，但浏览器语言不是日语
+    else if (currentPath.includes('/ja/') && !userLang.startsWith('ja')) {
+        // 如果浏览器语言是中文
+        if (userLang.startsWith('zh')) {
+            console.log('In Japanese directory but browser language is Chinese, redirecting to Chinese version');
+            redirectInProgress = true;
+            window.location.href = '../zh/index.html?noredirect=1';
+            return;
+        }
+        // 其他非日语语言，重定向到英文版
+        else if (!userLang.startsWith('ja')) {
+            console.log('In Japanese directory but browser language is not Japanese, redirecting to English version');
+            redirectInProgress = true;
+            window.location.href = '../index.html?noredirect=1';
+            return;
+        }
+    }
+    
+    console.log('No redirection needed based on current path and browser language');
 }
 
 /**
