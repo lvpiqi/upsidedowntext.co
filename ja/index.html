@@ -368,7 +368,7 @@
             redirectToLanguage(langCode);
         }
         
-        // 初期化時に言語ドロップダウンの値を設定
+        // 初期化
         window.onload = function() {
             // 現在の年を更新
             document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -421,6 +421,12 @@
                     switchTab(tabId);
                 });
             });
+            
+            // 自動言語検出が必要かどうかを確認
+            // URLにnoautodetectパラメータがある場合、自動検出をスキップ
+            if (!checkUrlParams()) {
+                detectBrowserLanguage();
+            }
         };
     </script>
 </body>

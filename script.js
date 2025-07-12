@@ -59,6 +59,7 @@ const flipMap = {
 // 添加一个全局变量，用于防止循环重定向
 let redirectInProgress = false;
 let debugMode = true; // 开启调试模式
+let manualLanguageSelected = false; // 标记用户是否手动选择了语言
 
 // 添加调试函数
 function debugLog(...args) {
@@ -75,6 +76,63 @@ function setCookie(name, value, days) {
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    
+    // 如果设置的是语言cookie，标记为手动选择
+    if (name === "selected_language") {
+        manualLanguageSelected = true;
+        debugLog('语言被手动选择，标记已设置');
+    }
+}
+
+/**
+ * 检测浏览器语言并重定向
+ */
+function detectBrowserLanguage() {
+    // 如果用户已经手动选择过语言，不进行自动检测
+    if (manualLanguageSelected) {
+        debugLog('用户已手动选择语言，跳过自动检测');
+        return;
+    }
+    
+    // 检查cookie中是否已有语言选择
+    const cookieLang = getCookie("selected_language");
+    if (cookieLang) {
+        debugLog('从cookie中检测到语言:', cookieLang);
+        manualLanguageSelected = true; // 视为手动选择
+        return;
+    }
+    
+    // 获取浏览器语言
+    let browserLang = navigator.language || navigator.userLanguage;
+    browserLang = browserLang.toLowerCase();
+    debugLog('检测到浏览器语言:', browserLang);
+    
+    // 确定使用哪种语言
+    let targetLang = 'en'; // 默认英文
+    if (browserLang.startsWith('zh')) {
+        targetLang = 'zh';
+    } else if (browserLang.startsWith('ja')) {
+        targetLang = 'ja';
+    }
+    
+    // 检查当前是否已经在正确的语言页面
+    const currentPath = window.location.pathname;
+    const isInZh = currentPath.includes('/zh/');
+    const isInJa = currentPath.includes('/ja/');
+    const isInRoot = !isInZh && !isInJa;
+    
+    // 如果已在正确语言页面，不需要重定向
+    if ((targetLang === 'zh' && isInZh) || 
+        (targetLang === 'ja' && isInJa) || 
+        (targetLang === 'en' && isInRoot)) {
+        debugLog('已在正确的语言页面，无需重定向');
+        return;
+    }
+    
+    // 如果需要重定向，设置cookie并执行重定向
+    debugLog('基于浏览器语言自动重定向到:', targetLang);
+    setCookie("selected_language", targetLang, 30);
+    redirectToLanguage(targetLang);
 }
 
 /**
@@ -82,7 +140,7 @@ function setCookie(name, value, days) {
  */
 function redirectToLanguage(lang) {
     if (redirectInProgress) {
-        debugLog('Redirect already in progress, skipping');
+        debugLog('重定向已在进行中，跳过');
         return;
     }
     
@@ -91,9 +149,9 @@ function redirectToLanguage(lang) {
     const queryString = window.location.search;
     const hash = window.location.hash;
     
-    debugLog('Current path:', currentPath);
-    debugLog('Query string:', queryString);
-    debugLog('Hash:', hash);
+    debugLog('当前路径:', currentPath);
+    debugLog('查询字符串:', queryString);
+    debugLog('哈希:', hash);
     
     // 检查是否在根目录或语言子目录
     const isInZh = currentPath.includes('/zh/');
@@ -117,7 +175,7 @@ function redirectToLanguage(lang) {
         relativePath = 'index.html';
     }
     
-    debugLog('Extracted relative path:', relativePath);
+    debugLog('提取的相对路径:', relativePath);
     
     // 构建重定向路径
     let redirectPath = '';
@@ -135,21 +193,24 @@ function redirectToLanguage(lang) {
     
     // 如果在zh目录中选择zh语言，或在ja目录中选择ja语言，不需要重定向
     if ((isInZh && lang === 'zh') || (isInJa && lang === 'ja') || (isInRoot && lang === 'en')) {
-        debugLog('Already in the correct language directory, no redirect needed');
+        debugLog('已在正确的语言目录，无需重定向');
         return;
     }
     
     if (redirectPath) {
-        // 添加查询参数（排除noredirect参数）
+        // 添加查询参数（排除已有参数）
         const newQueryParams = new URLSearchParams();
         if (queryString) {
             const params = new URLSearchParams(queryString);
             params.forEach((value, key) => {
-                if (key !== 'noredirect') {
+                if (key !== 'noautodetect') {
                     newQueryParams.append(key, value);
                 }
             });
         }
+        
+        // 添加防止自动检测的参数
+        newQueryParams.append('noautodetect', '1');
         
         const finalQueryString = newQueryParams.toString();
         const queryPart = finalQueryString ? '?' + finalQueryString : '';
@@ -157,11 +218,11 @@ function redirectToLanguage(lang) {
         // 组合完整URL，包括查询参数和哈希
         const finalUrl = redirectPath + queryPart + hash;
         
-        debugLog('Redirecting to:', finalUrl);
+        debugLog('重定向到:', finalUrl);
         redirectInProgress = true;
         window.location.href = finalUrl;
     } else {
-        debugLog('No redirect path determined, staying on current page');
+        debugLog('未确定重定向路径，停留在当前页面');
     }
 }
 
@@ -169,8 +230,7 @@ function redirectToLanguage(lang) {
  * Get cookie
  */
 function getCookie(name) {
-    debugLog('Getting cookie:', name);
-    debugLog('All cookies:', document.cookie);
+    debugLog('获取cookie:', name);
     
     const cname = name + "=";
     const decodedCookie = decodeURIComponent(document.cookie);
@@ -183,12 +243,24 @@ function getCookie(name) {
         }
         if (c.indexOf(cname) === 0) {
             const value = c.substring(cname.length, c.length);
-            debugLog('Found cookie value:', value);
+            debugLog('找到cookie值:', value);
             return value;
         }
     }
-    debugLog('Cookie not found');
+    debugLog('未找到cookie');
     return "";
+}
+
+/**
+ * 检查URL参数
+ */
+function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('noautodetect')) {
+        debugLog('URL包含noautodetect参数，跳过自动检测');
+        return true;
+    }
+    return false;
 }
 
 /**

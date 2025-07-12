@@ -433,7 +433,7 @@
             redirectToLanguage(langCode);
         }
         
-        // 初始化时设置语言下拉框的值
+        // 初始化
         window.onload = function() {
             // 更新当前年份
             document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -486,6 +486,12 @@
                     switchTab(tabId);
                 });
             });
+            
+            // 检查是否需要自动检测语言
+            // 如果URL中有noautodetect参数，跳过自动检测
+            if (!checkUrlParams()) {
+                detectBrowserLanguage();
+            }
         };
     </script>
 </body>
