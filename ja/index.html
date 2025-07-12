@@ -346,14 +346,14 @@
 
     <script src="../script.js"></script>
     <script>
-        // 言語切替関数
+        // 言語切り替え機能
         function changeLanguage() {
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
             // 選択された値に基づいて言語コードを決定
             let langCode = '';
-            if (selectedValue.includes('../zh/')) {
+            if (selectedValue.includes('/zh/')) {
                 langCode = 'zh';
             } else if (selectedValue.includes('../index.html')) {
                 langCode = 'en';
@@ -361,12 +361,67 @@
                 langCode = 'ja';
             }
             
-            // Cookieを設定、有効期間30日
+            // Cookieを設定、有効期限は30日間
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
             // redirectToLanguage関数を直接呼び出す
             redirectToLanguage(langCode);
         }
+        
+        // 初期化時に言語ドロップダウンの値を設定
+        window.onload = function() {
+            // 現在の年を更新
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // イベントハンドラをバインド
+            if (inputText) {
+                inputText.addEventListener('input', updateCharCount);
+            }
+            if (flipBtn) {
+                flipBtn.addEventListener('click', () => processText('flip'));
+            }
+            if (reverseBtn) {
+                reverseBtn.addEventListener('click', () => processText('reverse'));
+            }
+            if (mirrorBtn) {
+                mirrorBtn.addEventListener('click', () => processText('mirror'));
+            }
+            if (flipReverseBtn) {
+                flipReverseBtn.addEventListener('click', () => processText('flipReverse'));
+            }
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearAll);
+            }
+            if (copyBtn) {
+                copyBtn.addEventListener('click', copyOutput);
+            }
+            if (showHtmlCheck) {
+                showHtmlCheck.addEventListener('change', toggleHtmlOutput);
+            }
+            if (copyHtmlBtn) {
+                copyHtmlBtn.addEventListener('click', copyHtmlOutput);
+            }
+            if (shareWeixin) {
+                shareWeixin.addEventListener('click', shareToWeixin);
+            }
+            if (shareWeibo) {
+                shareWeibo.addEventListener('click', shareToWeibo);
+            }
+            if (shareQQ) {
+                shareQQ.addEventListener('click', shareToQQ);
+            }
+            
+            // 文字テーブルを初期化
+            initCharTables();
+            
+            // タブ切り替えイベントをバインド
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+        };
     </script>
 </body>
 </html> 
