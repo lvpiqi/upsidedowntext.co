@@ -36,9 +36,9 @@
             </nav>
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
-                    <option value="index.html" selected>English</option>
-                    <option value="zh/index.html">中文</option>
-                    <option value="ja/index.html">日本語</option>
+                    <option value="./" selected>English</option>
+                    <option value="zh/">中文</option>
+                    <option value="ja/">日本語</option>
                 </select>
             </div>
         </div>
@@ -417,21 +417,26 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // 根据选择的值确定语言代码
+            // 根据选择的值确定语言代码和目标URL
             let langCode = '';
+            let targetUrl = '';
+            
             if (selectedValue.includes('/zh/')) {
                 langCode = 'zh';
+                targetUrl = 'zh/';
             } else if (selectedValue.includes('/ja/')) {
                 langCode = 'ja';
+                targetUrl = 'ja/';
             } else {
                 langCode = 'en';
+                targetUrl = './';
             }
             
             // 设置cookie，有效期30天
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
-            // 直接跳转到选择的页面
-            window.location.href = selectedValue;
+            // 直接跳转到目录
+            window.location.href = targetUrl;
         }
         
         // 初始化

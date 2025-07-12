@@ -36,9 +36,9 @@
             </nav>
             <div class="language-switcher">
                 <select id="language-select" onchange="changeLanguage()">
-                    <option value="../index.html">English</option>
-                    <option value="../zh/index.html">中文</option>
-                    <option value="index.html" selected>日本語</option>
+                    <option value="../">English</option>
+                    <option value="../zh/">中文</option>
+                    <option value="./" selected>日本語</option>
                 </select>
             </div>
         </div>
@@ -353,21 +353,26 @@
             const select = document.getElementById('language-select');
             const selectedValue = select.value;
             
-            // 選択された値に基づいて言語コードを決定
+            // 選択された値に基づいて言語コードとターゲットURLを決定
             let langCode = '';
+            let targetUrl = '';
+            
             if (selectedValue.includes('../zh/')) {
                 langCode = 'zh';
+                targetUrl = '../zh/';
             } else if (selectedValue.includes('../index.html')) {
                 langCode = 'en';
+                targetUrl = '../';
             } else {
                 langCode = 'ja';
+                targetUrl = './';
             }
             
             // Cookieを設定、有効期限は30日間
             document.cookie = "selected_language=" + langCode + "; path=/; max-age=" + (30 * 24 * 60 * 60);
             
-            // 直接選択されたページに移動
-            window.location.href = selectedValue;
+            // 直接ディレクトリに移動
+            window.location.href = targetUrl;
         }
         
         // 初期化
