@@ -185,15 +185,30 @@ function redirectToLanguage(lang) {
     const currentPath = window.location.pathname;
     const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
     
+    // 获取当前页面的文件名（如果没有则默认为index.html）
+    let currentFile = 'index.html';
+    const pathParts = currentPath.split('/');
+    if (pathParts.length > 0) {
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart && lastPart.includes('.html')) {
+            currentFile = lastPart;
+        }
+    }
+    
+    debugLog('Current file detected:', currentFile);
+    
     let redirectPath = '';
     
     if (lang === 'zh') {
-        redirectPath = isInRoot ? 'zh/index.html' : '../zh/index.html';
+        redirectPath = isInRoot ? 'zh/' + currentFile : '../zh/' + currentFile;
     } else if (lang === 'ja') {
-        redirectPath = isInRoot ? 'ja/index.html' : '../ja/index.html';
+        redirectPath = isInRoot ? 'ja/' + currentFile : '../ja/' + currentFile;
     } else if (lang === 'en') {
-        redirectPath = isInRoot ? 'index.html' : '../index.html';
+        redirectPath = isInRoot ? currentFile : '../' + currentFile;
     }
+    
+    // 检查文件是否存在，如果不存在则使用index.html
+    // 由于无法直接检查文件是否存在，这里我们假设所有语言版本都有相同的文件结构
     
     if (redirectPath) {
         debugLog('Redirecting to:', redirectPath);
@@ -233,14 +248,26 @@ function detectBrowserLanguage() {
         const currentPath = window.location.pathname;
         const isInRoot = !currentPath.includes('/zh/') && !currentPath.includes('/ja/');
         
+        // 获取当前页面的文件名（如果没有则默认为index.html）
+        let currentFile = 'index.html';
+        const pathParts = currentPath.split('/');
+        if (pathParts.length > 0) {
+            const lastPart = pathParts[pathParts.length - 1];
+            if (lastPart && lastPart.includes('.html')) {
+                currentFile = lastPart;
+            }
+        }
+        
+        debugLog('Current file detected for auto-redirect:', currentFile);
+        
         let redirectPath = '';
         
         if (detectedLang === 'zh') {
-            redirectPath = isInRoot ? 'zh/index.html' : '../zh/index.html';
+            redirectPath = isInRoot ? 'zh/' + currentFile : '../zh/' + currentFile;
         } else if (detectedLang === 'ja') {
-            redirectPath = isInRoot ? 'ja/index.html' : '../ja/index.html';
+            redirectPath = isInRoot ? 'ja/' + currentFile : '../ja/' + currentFile;
         } else if (detectedLang === 'en') {
-            redirectPath = isInRoot ? 'index.html' : '../index.html';
+            redirectPath = isInRoot ? currentFile : '../' + currentFile;
         }
         
         if (redirectPath) {
