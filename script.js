@@ -59,6 +59,7 @@ const flipMap = {
 // 添加一个全局变量，用于防止循环重定向
 let redirectInProgress = false;
 let debugMode = true; // 开启调试模式
+let manualLanguageSelected = false; // 添加一个标志，表示用户是否手动选择了语言
 
 // 添加调试函数
 function debugLog(...args) {
@@ -95,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         debugLog('Language parameter found in URL:', langParam);
         // 设置cookie
         setCookie('selected_language', langParam, 30);
+        manualLanguageSelected = true; // 标记用户已手动选择语言
         debugLog('Cookie set for language:', langParam);
         
         // 移除URL参数并刷新页面
@@ -112,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 如果有手动选择的语言，并且当前页面不是该语言，则重定向
     if (selectedLang && !urlParams.has('noredirect')) {
+        manualLanguageSelected = true; // 标记用户已手动选择语言
         if (needsRedirect(selectedLang)) {
             debugLog('Need to redirect based on selected language');
             redirectToLanguage(selectedLang);
@@ -121,11 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } 
     // 如果没有手动选择的语言，并且没有禁止重定向，则根据浏览器语言自动选择
-    else if (!selectedLang && !urlParams.has('noredirect')) {
+    else if (!selectedLang && !urlParams.has('noredirect') && !manualLanguageSelected) {
         debugLog('No selected language, checking browser language');
         detectBrowserLanguage();
     } else {
-        debugLog('Skipping language detection due to noredirect parameter');
+        debugLog('Skipping language detection due to noredirect parameter or manual selection');
     }
     
     // Initialize character tables
@@ -241,6 +244,12 @@ function setCookie(name, value, days) {
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    
+    // 如果设置的是语言cookie，则标记为手动选择
+    if (name === "selected_language") {
+        manualLanguageSelected = true;
+        debugLog('Manual language selection flag set to true');
+    }
 }
 
 /**
